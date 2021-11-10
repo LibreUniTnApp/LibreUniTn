@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './invocation_uri.dart' show getInvocationUriString;
-import './oauth.dart';
-import './themes.dart' as Themes;
+import './oauth/oauth.dart';
+import './themes.dart' as themes;
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: Themes.lightTheme,
+      theme: themes.lightTheme,
       home: const Main(),
     );
   }
