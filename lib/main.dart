@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:openid_client/openid_client.dart' show Client;
 import './invocation_uri.dart' show getInvocationUriString;
-import './oauth/oauth.dart';
+import './auth.dart' as auth;
 import './themes.dart' as themes;
 
 void main() {
@@ -29,9 +30,17 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext cntxt) {
     return Scaffold(
-      body: Center(
-        child: Text(getClient().toString())
-      )
-    );
+      appBar: AppBar(),
+        body: Center(
+            child: FutureBuilder(
+      future: auth.getClient(),
+      builder: (cntxt, client) {
+        if (client.hasData) {
+          return Text(auth.getAuthorizationFlow(client.data! as Client).authenticationUri.toString());
+        } else {
+          return Text(client.toString());
+        }
+      },
+    )));
   }
 }
