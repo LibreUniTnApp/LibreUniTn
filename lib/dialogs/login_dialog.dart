@@ -10,20 +10,20 @@ class LoginDialog extends StatelessWidget {
   const LoginDialog({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => ClientProvider(child: (context) {
-        Future.microtask(() async {
-          final loginRequest = await ClientProvider.getClient(context).login();
-          url_launcher.launch(loginRequest.authenticationUri.toString());
-          final response = await invocationUriStream.take(1).single;
-          late final AuthorizedClient? authClient;
-          if (response != null) {
-            authClient =
-                await loginRequest.respondWithCustomUri(Uri.parse(response));
-          } else {
-            authClient = null;
-          }
-          Navigator.pop<AuthorizedClient>(context, authClient);
-        });
-        return const CircularProgressDialog(text: 'Logging in...');
-      });
+  Widget build(BuildContext context) {
+    Future.microtask(() async {
+      final loginRequest = await ClientProvider.getClient(context).login();
+      url_launcher.launch(loginRequest.authenticationUri.toString());
+      final response = await invocationUriStream.take(1).single;
+      late final AuthorizedClient? authClient;
+      if (response != null) {
+        authClient =
+            await loginRequest.respondWithCustomUri(Uri.parse(response));
+      } else {
+        authClient = null;
+      }
+      Navigator.pop<AuthorizedClient>(context, authClient);
+    });
+    return const CircularProgressDialog(text: 'Logging in...');
+  }
 }

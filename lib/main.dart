@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:libreunitrentoapp/API/authorized_client.dart';
+import './API/authorized_client.dart';
 import './providers/client_provider.dart';
 import './providers/invocation_uri.dart';
 import './dialogs/login_dialog.dart';
@@ -31,26 +31,30 @@ class Main extends StatelessWidget {
         appBar: AppBar(),
         body: Center(
           child: InvocationUriProvider(
-            child: (cntxt) =>
-                Text(InvocationUriProvider.getInvocationUri(cntxt) ?? 'NULL'),
+            child: (context) =>
+                Text(InvocationUriProvider.getInvocationUri(context) ?? 'NULL'),
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              ListTile(
-                  leading: const Icon(Icons.login),
-                  title: const Text('Login'),
-                  onTap: () async {
-                    final authClient = await showDialog<AuthorizedClient>(
-                        context: context,
-                        builder: (cntxt) => const LoginDialog(),
-                        barrierDismissible: false);
-                    if (authClient != null) {
-                      ClientProvider.login(context, authClient);
-                    }
-                  })
-            ],
+        drawer: Builder(
+          builder: (context) => Drawer(
+            child: ListView(
+              children: [
+                ListTile(
+                    leading: const Icon(Icons.login),
+                    title: const Text('Login'),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      final authClient = await showDialog<AuthorizedClient>(
+                          context: context,
+                          builder: (cntxt) =>
+                              ClientProvider(child: (_) => const LoginDialog()),
+                          barrierDismissible: false);
+                      if (authClient != null) {
+                        ClientProvider.login(context, authClient);
+                      }
+                    })
+              ],
+            ),
           ),
         ),
       );
