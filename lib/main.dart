@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './API/authorized_client.dart';
 import './providers/client_provider.dart';
 import './providers/invocation_uri.dart';
 import './dialogs/login_dialog.dart';
@@ -27,35 +26,39 @@ class Main extends StatelessWidget {
   const Main({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: InvocationUriProvider(
-            child: (context) =>
-                Text(InvocationUriProvider.getInvocationUri(context) ?? 'NULL'),
-          ),
+  Widget build(BuildContext context) {
+    final client = ClientProvider.getClient(context);
+
+    final drawer = Builder(
+      builder: (context) => Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+                leading: const Icon(Icons.login),
+                title: const Text('Login'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await showDialog(
+                      context: context,
+                      builder: (cntxt) =>
+                          ClientProvider(child: (_) => const LoginDialog()),
+                      barrierDismissible: false);
+                })
+          ],
         ),
-        drawer: Builder(
-          builder: (context) => Drawer(
-            child: ListView(
-              children: [
-                ListTile(
-                    leading: const Icon(Icons.login),
-                    title: const Text('Login'),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      final authClient = await showDialog<AuthorizedClient>(
-                          context: context,
-                          builder: (cntxt) =>
-                              ClientProvider(child: (_) => const LoginDialog()),
-                          barrierDismissible: false);
-                      if (authClient != null) {
-                        ClientProvider.login(context, authClient);
-                      }
-                    })
-              ],
-            ),
-          ),
-        ),
-      );
+      ),
+    );
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: client != null
+            ? InvocationUriProvider(
+                child: (context) => Text(
+                    InvocationUriProvider.getInvocationUri(context) ?? 'NULL'),
+              )
+            : const CircularProgressIndicator(),
+      ),
+      drawer: client != null ? drawer : null,
+    );
+  }
 }

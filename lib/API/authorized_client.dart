@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http show Client;
 import './client.dart';
 
 class AuthorizedClient extends Client {
-  final Credential _credentials;
+  final Credential credentials;
 
-  const AuthorizedClient(http.Client httpClient, this._credentials)
+  const AuthorizedClient(http.Client httpClient, this.credentials)
       : super.withHttpClient(httpClient);
 }
