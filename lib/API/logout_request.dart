@@ -9,5 +9,5 @@ class LogoutRequest {
   const LogoutRequest(this._httpClient, this.logoutUrl);
 
   //TODO: Refine exception
-  Client respond(String uri) => uri == logoutRedirectUri ? Client.withHttpClient(_httpClient) : throw Exception('Incorrect redirect URL');
+  Client respond(String uri) => uri.startsWith(logoutRedirectUri) ? Client.withHttpClient(_httpClient) : throw Exception('Incorrect redirect URL');
 }
