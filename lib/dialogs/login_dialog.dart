@@ -24,7 +24,7 @@ class LoginDialog extends StatelessWidget {
   void _scheduleLoginFuture(BuildContext context, Client client) {
     Future(() async {
       final loginRequest = await client.login();
-      url_launcher.launch(loginRequest.authenticationUri.toString(), forceSafariVC: null, forceWebView: true);
+      url_launcher.launch(loginRequest.authenticationUri.toString(), forceSafariVC: null, forceWebView: false);
       final response = await invocationUriStream.take(1).single;
       if (response != null) {
         final authClient =

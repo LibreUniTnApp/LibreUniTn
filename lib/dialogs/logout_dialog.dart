@@ -25,7 +25,7 @@ class LogoutDialog extends StatelessWidget {
       final logoutRequest = client.logout();
       if (logoutRequest.logoutUrl != null) {
         await url_launcher.launch(logoutRequest.logoutUrl.toString(),
-            forceSafariVC: null, forceWebView: true);
+            forceSafariVC: null, forceWebView: false);
         final response = await invocationUriStream.take(1).single;
         if (response != null) {
           final client = logoutRequest.respond(response);
