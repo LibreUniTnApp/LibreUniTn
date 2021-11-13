@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openid_client/openid_client.dart' show UserInfo;
 import './providers/client_provider.dart';
 import './API/authorized_client.dart';
 import './dialogs/login_dialog.dart';
@@ -11,7 +12,6 @@ class NavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) =>
       Drawer(child: LayoutBuilder(builder: (context, layout) {
         ClientProvider.depend(context);
-        debugPrint('${clientNotifier.client is AuthorizedClient}');
         final headerHeight = layout.maxHeight / 5;
         return Column(
           children: [
@@ -22,10 +22,28 @@ class NavigationDrawer extends StatelessWidget {
                   child: FlexibleSpaceBar(
                     background: Builder(
                         builder: (context) => Container(
-                              width: double.infinity,
-                              height: double.infinity,
-                              color: Theme.of(context).colorScheme.primary,
-                            )),
+                            width: double.infinity,
+                            height: double.infinity,
+                            color: Theme.of(context).colorScheme.primary,
+                            child: clientNotifier.client is AuthorizedClient
+                                ? FutureBuilder<UserInfo>(
+                                    future: (clientNotifier.client
+                                            as AuthorizedClient)
+                                        .credentials
+                                        .getUserInfo(),
+                                    builder: (context, userInfoFuture) {
+                                      if (userInfoFuture.hasData &&
+                                          userInfoFuture.data!.name != null) {
+                                        return Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Text(
+                                              userInfoFuture.data!.name!,
+                                              style: Theme.of(context).textTheme.headline6,
+                                          ));
+                                      }
+                                      return Container();
+                                    })
+                                : null)),
                   ),
                 )),
             if (clientNotifier.client != null)
