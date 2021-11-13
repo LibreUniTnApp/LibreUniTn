@@ -7,9 +7,8 @@ import './auth.dart';
 class AuthorizedClient extends Client {
   final Credential credential;
 
-  const AuthorizedClient(http.Client httpClient, this.credential)
-      : super.withHttpClient(httpClient);
-
+  AuthorizedClient(http.Client httpClient, this.credential)
+      : super.withHttpClient(credential.createHttpClient(httpClient));
   LogoutRequest logout() =>
       LogoutRequest(httpClient, getEndSessionUri(credential));
 
