@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert' show jsonEncode;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:libreunitrentoapp/API/client.dart';
@@ -19,7 +19,7 @@ class LoginDialog extends StatelessWidget {
     //This will be called only if client is Client
     final client = clientNotifier.client as Client;
     _scheduleLoginFuture(context, client);
-    return const CircularProgressDialog(text: 'Logging in...');
+    return CircularProgressDialog(text: Text('Logging in...', style: Theme.of(context).textTheme.headline6));
   }
 
   void _scheduleLoginFuture(BuildContext context, Client client) {

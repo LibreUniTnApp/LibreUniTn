@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:libreunitrentoapp/API/authorized_client.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -18,7 +18,7 @@ class LogoutDialog extends StatelessWidget {
     //This will be called only when client is AuthorizedClient
     final client = clientNotifier.client as AuthorizedClient;
     _scheduleLogoutFuture(context, client);
-    return const CircularProgressDialog(text: 'Logging out...');
+    return CircularProgressDialog(text: Text('Logging out...', style: Theme.of(context).textTheme.headline6));
   }
 
   void _scheduleLogoutFuture(BuildContext context, AuthorizedClient client) {

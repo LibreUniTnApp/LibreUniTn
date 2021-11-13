@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CircularProgressDialog extends StatelessWidget {
-  final String text;
+  final Widget text;
 
   const CircularProgressDialog({Key? key, required this.text})
       : super(key: key);
@@ -13,7 +13,7 @@ class CircularProgressDialog extends StatelessWidget {
           child: Row(
             children: [
               const CircularProgressIndicator(),
-              Text(text, style: Theme.of(context).textTheme.headline6)
+              text
             ],
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
