@@ -15,27 +15,16 @@ class LoginDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final client = clientNotifier.client;
-    if (client != null) {
-      _scheduleLoginFuture(context, client);
-    } else {
-      late final VoidCallback onClientChange;
-      onClientChange = () {
-        final client = clientNotifier.client;
-        if (client != null) {
-          clientNotifier.removeListener(onClientChange);
-          _scheduleLoginFuture(context, client);
-        }
-      };
-      clientNotifier.addListener(onClientChange);
-    }
+    //This will be called only if client is Client
+    final client = clientNotifier.client as Client;
+    _scheduleLoginFuture(context, client);
     return const CircularProgressDialog(text: 'Logging in...');
   }
 
   void _scheduleLoginFuture(BuildContext context, Client client) {
     Future(() async {
       final loginRequest = await client.login();
-      url_launcher.launch(loginRequest.authenticationUri.toString());
+      url_launcher.launch(loginRequest.authenticationUri.toString(), forceSafariVC: null, forceWebView: true);
       final response = await invocationUriStream.take(1).single;
       if (response != null) {
         final authClient =
