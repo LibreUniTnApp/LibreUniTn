@@ -53,13 +53,9 @@ class NavigationDrawer extends StatelessWidget {
 
   void _showLogoutDialog(BuildContext context) async {
     Navigator.pop(context);
-    //TODO: spawn LogoutDialog
-    /*
     await showDialog(
         context: context,
-        builder: (context) => ClientProvider(child: (_) => const LoginDialog()),
+        builder: (context) => const LogoutDialog(),
         barrierDismissible: false);
-    */
-    throw UnimplementedError("Logout not yet implemented");
   }
 }
