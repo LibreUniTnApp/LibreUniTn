@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:libreunitrentoapp/API/authorized_client.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:libreunitrentoapp/providers/client_provider.dart';
 import 'package:libreunitrentoapp/providers/invocation_uri.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
     as secure_storage_constants;
 import './circular_progress_dialog.dart';
+import './constants.dart';
 
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({Key? key}) : super(key: key);
@@ -24,8 +25,8 @@ class LogoutDialog extends StatelessWidget {
     Future(() async {
       final logoutRequest = client.logout();
       if (logoutRequest.logoutUrl != null) {
-        await url_launcher.launch(logoutRequest.logoutUrl.toString(),
-            forceSafariVC: null, forceWebView: false);
+        launch(logoutRequest.logoutUrl.toString(),
+            customTabsOption: customTabOptions);
         final response = await invocationUriStream.take(1).single;
         if (response != null) {
           final client = logoutRequest.respond(response);

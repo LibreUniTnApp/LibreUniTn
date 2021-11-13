@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert' show jsonEncode;
 import 'package:flutter/widgets.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:libreunitrentoapp/API/client.dart';
 import 'package:libreunitrentoapp/providers/client_provider.dart';
@@ -9,6 +9,7 @@ import 'package:libreunitrentoapp/providers/invocation_uri.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
     as secure_storage_constants;
 import './circular_progress_dialog.dart';
+import './constants.dart';
 
 class LoginDialog extends StatelessWidget {
   const LoginDialog({Key? key}) : super(key: key);
@@ -24,7 +25,10 @@ class LoginDialog extends StatelessWidget {
   void _scheduleLoginFuture(BuildContext context, Client client) {
     Future(() async {
       final loginRequest = await client.login();
-      url_launcher.launch(loginRequest.authenticationUri.toString(), forceSafariVC: null, forceWebView: false);
+      launch(loginRequest.authenticationUri.toString(),
+        customTabsOption: customTabOptions,
+        safariVCOption: safariViewControllerOptions
+      );
       final response = await invocationUriStream.take(1).single;
       if (response != null) {
         final authClient =
