@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert' show jsonEncode;
-import 'dart:ui' show VoidCallback;
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:libreunitrentoapp/API/client.dart';
-import 'package:libreunitrentoapp/providers/client_pubsub.dart';
+import 'package:libreunitrentoapp/providers/client_provider.dart';
 import 'package:libreunitrentoapp/providers/invocation_uri.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
     as secure_storage_constants;

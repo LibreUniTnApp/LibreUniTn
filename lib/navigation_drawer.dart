@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import './providers/client_pubsub.dart';
+import './providers/client_provider.dart';
 import './API/authorized_client.dart';
 import './dialogs/login_dialog.dart';
+import './dialogs/logout_dialog.dart';
 
 class NavigationDrawer extends StatelessWidget {
   const NavigationDrawer({Key? key}) : super(key: key);
@@ -9,9 +10,10 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       Drawer(child: LayoutBuilder(builder: (context, layout) {
+        ClientProvider.depend(context);
+        debugPrint('${clientNotifier.client is AuthorizedClient}');
         final headerHeight = layout.maxHeight / 5;
-        return ClientListener(
-            child: Column(
+        return Column(
           children: [
             SizedBox(
                 height: headerHeight,
@@ -38,7 +40,7 @@ class NavigationDrawer extends StatelessWidget {
           ],
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
-        ));
+        );
       }));
 
   void _showLoginDialog(BuildContext context) async {

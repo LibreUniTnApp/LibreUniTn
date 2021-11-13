@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert' show jsonDecode;
 import 'package:flutter/foundation.dart' show ValueNotifier, Key;
-import 'package:flutter/widgets.dart' show InheritedNotifier, Widget;
+import 'package:flutter/widgets.dart'
+    show InheritedNotifier, Widget, BuildContext;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:openid_client/openid_client.dart' show Credential;
 import 'package:http/http.dart' as http show Client;
@@ -46,7 +47,10 @@ class ClientNotifier extends ValueNotifier<Client?> {
   void logout(Client client) => _setClient(client);
 }
 
-class ClientListener extends InheritedNotifier<ClientNotifier> {
-  ClientListener({Key? key, required Widget child})
+class ClientProvider extends InheritedNotifier<ClientNotifier> {
+  ClientProvider({Key? key, required Widget child})
       : super(key: key, child: child, notifier: clientNotifier);
+
+  static void depend(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ClientProvider>();
 }
