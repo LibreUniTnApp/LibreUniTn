@@ -36,7 +36,7 @@ class LoginDialog extends StatelessWidget {
         const secureStorage = FlutterSecureStorage();
         await secureStorage.write(
             key: secure_storage_constants.credentialKey,
-            value: jsonEncode(authClient.credentials.toJson()),
+            value: jsonEncode(authClient.credential.toJson()),
             iOptions: secure_storage_constants.iOSOptions);
         clientNotifier.login(authClient);
       }

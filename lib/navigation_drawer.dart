@@ -29,7 +29,7 @@ class NavigationDrawer extends StatelessWidget {
                                 ? FutureBuilder<UserInfo>(
                                     future: (clientNotifier.client
                                             as AuthorizedClient)
-                                        .credentials
+                                        .credential
                                         .getUserInfo(),
                                     builder: (context, userInfoFuture) {
                                       if (userInfoFuture.hasData &&

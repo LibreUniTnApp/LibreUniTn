@@ -21,10 +21,15 @@ class ClientNotifier extends ValueNotifier<Client?> {
       final credentialJson = await secureStorage.read(
           key: secure_storage_constants.credentialKey,
           iOptions: secure_storage_constants.iOSOptions);
-      late Client client;
+      late final Client client;
       if (credentialJson != null) {
         final credential = Credential.fromJson(jsonDecode(credentialJson));
-        client = AuthorizedClient(http.Client(), credential);
+        try {
+          client = await AuthorizedClient.validateBeforeCreating(
+              http.Client(), credential);
+        } on List<Exception> {
+          client = Client();
+        }
       } else {
         client = Client();
       }

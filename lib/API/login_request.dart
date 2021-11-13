@@ -20,6 +20,6 @@ class LoginRequest {
 
   Future<AuthorizedClient> respond(Map<String, String> response) async {
     final credentials = await _authorizationFlow.callback(response);
-    return AuthorizedClient(_httpClient, credentials);
+    return AuthorizedClient.validateBeforeCreating(_httpClient, credentials);
   }
 }

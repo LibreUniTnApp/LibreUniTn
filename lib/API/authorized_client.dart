@@ -5,11 +5,21 @@ import './logout_request.dart';
 import './auth.dart';
 
 class AuthorizedClient extends Client {
-  final Credential credentials;
+  final Credential credential;
 
-  const AuthorizedClient(http.Client httpClient, this.credentials)
+  const AuthorizedClient(http.Client httpClient, this.credential)
       : super.withHttpClient(httpClient);
 
   LogoutRequest logout() =>
-      LogoutRequest(httpClient, getEndSessionUri(credentials));
+      LogoutRequest(httpClient, getEndSessionUri(credential));
+
+  static Future<AuthorizedClient> validateBeforeCreating(
+      http.Client httpClient, Credential credential) async {
+    final exceptionList = await credential.validateToken().toList();
+    if (exceptionList.isEmpty) {
+      return AuthorizedClient(httpClient, credential);
+    } else {
+      throw exceptionList;
+    }
+  }
 }
