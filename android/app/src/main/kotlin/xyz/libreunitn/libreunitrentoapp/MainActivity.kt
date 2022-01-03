@@ -22,7 +22,7 @@ class MainActivity: FlutterActivity() {
 		}
 	}
 
-	public override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+	override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 		super.configureFlutterEngine(flutterEngine)
 		this.eventChannel = EventChannel(
 			flutterEngine.getDartExecutor().getBinaryMessenger(),
@@ -30,19 +30,19 @@ class MainActivity: FlutterActivity() {
 		)
 		this.eventChannel.setStreamHandler(
 			object: EventChannel.StreamHandler {
-				public override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink){
+				override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink){
 					eventSink.success(lastIntentUri)
 					this@MainActivity.eventSink = eventSink
 				}
 
-				public override fun onCancel(arguments: Any?){
+				override fun onCancel(arguments: Any?){
 					this@MainActivity.eventSink = null
 				}
 			}
 		)
 	}
 
-	public override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+	override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
 		this.eventSink?.endOfStream()
 		super.cleanUpFlutterEngine(flutterEngine)
 	}

@@ -11,11 +11,11 @@ import 'package:libreunitrentoapp/API/authorized_client.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
     as secure_storage_constants;
 
-late final clientNotifier = ClientNotifier._fromSecureStorage();
+late final clientManager = ClientManager._fromSecureStorage();
 
-class ClientNotifier extends ValueNotifier<Client?> {
-  factory ClientNotifier._fromSecureStorage() {
-    final notifier = ClientNotifier._(null);
+class ClientManager extends ValueNotifier<Client?> {
+  factory ClientManager._fromSecureStorage() {
+    final notifier = ClientManager._(null);
     Future(() async {
       const secureStorage = FlutterSecureStorage();
       final credentialJson = await secureStorage.read(
@@ -38,7 +38,7 @@ class ClientNotifier extends ValueNotifier<Client?> {
     return notifier;
   }
 
-  ClientNotifier._(Client? client) : super(client);
+  ClientManager._(Client? client) : super(client);
 
   Client? get client => super.value;
 
@@ -52,9 +52,9 @@ class ClientNotifier extends ValueNotifier<Client?> {
   void logout(Client client) => _setClient(client);
 }
 
-class ClientProvider extends InheritedNotifier<ClientNotifier> {
+class ClientProvider extends InheritedNotifier<ClientManager> {
   ClientProvider({Key? key, required Widget child})
-      : super(key: key, child: child, notifier: clientNotifier);
+      : super(key: key, child: child, notifier: clientManager);
 
   static void depend(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<ClientProvider>();

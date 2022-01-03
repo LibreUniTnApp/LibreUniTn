@@ -16,7 +16,7 @@ class LogoutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //This will be called only when client is AuthorizedClient
-    final client = clientNotifier.client as AuthorizedClient;
+    final client = clientManager.client as AuthorizedClient;
     _scheduleLogoutFuture(context, client);
     return CircularProgressDialog(text: Text('Logging out...', style: Theme.of(context).textTheme.headline6));
   }
@@ -34,7 +34,7 @@ class LogoutDialog extends StatelessWidget {
           await secureStorage.delete(
               key: secure_storage_constants.credentialKey,
               iOptions: secure_storage_constants.iOSOptions);
-          clientNotifier.logout(client);
+          clientManager.logout(client);
         }
       }
       Navigator.pop(context);

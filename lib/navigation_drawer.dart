@@ -10,56 +10,30 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      Drawer(child: LayoutBuilder(builder: (context, layout) {
-        ClientProvider.depend(context);
-        final headerHeight = layout.maxHeight / 5;
-        return Column(
-          children: [
-            SizedBox(
-                height: headerHeight,
-                child: FlexibleSpaceBar.createSettings(
-                  currentExtent: headerHeight,
-                  child: FlexibleSpaceBar(
-                    background: Builder(
-                        builder: (context) => Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            color: Theme.of(context).colorScheme.primary,
-                            child: clientNotifier.client is AuthorizedClient
-                                ? FutureBuilder<UserInfo>(
-                                    future: (clientNotifier.client
-                                            as AuthorizedClient)
-                                        .credential
-                                        .getUserInfo(),
-                                    builder: (context, userInfoFuture) {
-                                      if (userInfoFuture.hasData &&
-                                          userInfoFuture.data!.name != null) {
-                                        return Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Text(
-                                              userInfoFuture.data!.name!,
-                                              style: Theme.of(context).textTheme.headline6,
-                                          ));
-                                      }
-                                      return Container();
-                                    })
-                                : null)),
-                  ),
-                )),
-            if (clientNotifier.client != null)
-              ListTile(
-                title: Text(clientNotifier.client is AuthorizedClient
-                    ? "Logout"
-                    : "Login"),
-                onTap: clientNotifier.client is AuthorizedClient
-                    ? () => _showLogoutDialog(context)
-                    : () => _showLoginDialog(context),
-              )
-          ],
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-        );
-      }));
+    Drawer(
+      child: LayoutBuilder(
+        builder: (context, layout) {
+          ClientProvider.depend(context);
+          final headerHeight = layout.maxHeight / 5;
+          return Column(
+            children: [
+              DrawerHeader(headerHeight: headerHeight),
+              if (clientManager.client != null)
+                ListTile(
+                  title: Text(clientManager.client is AuthorizedClient
+                      ? "Logout"
+                      : "Login"),
+                  onTap: clientManager.client is AuthorizedClient
+                      ? () => _showLogoutDialog(context)
+                      : () => _showLoginDialog(context),
+                )
+            ],
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+          );
+        }
+      )
+    );
 
   void _showLoginDialog(BuildContext context) async {
     Navigator.pop(context);
@@ -75,5 +49,53 @@ class NavigationDrawer extends StatelessWidget {
         context: context,
         builder: (context) => const LogoutDialog(),
         barrierDismissible: false);
+  }
+}
+
+class DrawerHeader extends StatelessWidget {
+  final double headerHeight;
+
+  const DrawerHeader({Key? key, required this.headerHeight}): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    ClientProvider.depend(context);
+
+    Widget? userNameWidget;
+    if(clientManager.client is AuthorizedClient){
+      userNameWidget = FutureBuilder<UserInfo>(
+        future: (clientManager.client as AuthorizedClient)
+            .credential
+            .getUserInfo(),
+        builder: (context, userInfoFuture) {
+          if (userInfoFuture.hasData && userInfoFuture.data!.name != null) {
+            return Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  userInfoFuture.data!.name!,
+                  style: Theme.of(context).textTheme.headline6,
+                )
+            );
+          } else {
+            return Container();
+          }
+        }
+      );
+    }
+
+    return SizedBox(
+      height: headerHeight,
+      child: FlexibleSpaceBar.createSettings(
+        currentExtent: headerHeight,
+        child: FlexibleSpaceBar(
+          background: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Theme.of(context).colorScheme.primary,
+            child: userNameWidget
+          ),
+        ),
+      )
+    );
   }
 }

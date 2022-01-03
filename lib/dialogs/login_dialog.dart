@@ -17,7 +17,7 @@ class LoginDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //This will be called only if client is Client
-    final client = clientNotifier.client as Client;
+    final client = clientManager.client as Client;
     _scheduleLoginFuture(context, client);
     return CircularProgressDialog(text: Text('Logging in...', style: Theme.of(context).textTheme.headline6));
   }
@@ -38,7 +38,7 @@ class LoginDialog extends StatelessWidget {
             key: secure_storage_constants.credentialKey,
             value: jsonEncode(authClient.credential.toJson()),
             iOptions: secure_storage_constants.iOSOptions);
-        clientNotifier.login(authClient);
+        clientManager.login(authClient);
       }
       Navigator.pop(context);
     });

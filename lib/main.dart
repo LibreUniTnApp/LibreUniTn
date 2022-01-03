@@ -30,7 +30,7 @@ class Main extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(),
         body: Center(
-          child: clientNotifier.client != null
+          child: clientManager.client != null
               ? InvocationUriProvider(
                   child: (context) => Text(
                       InvocationUriProvider.getInvocationUri(context) ??
