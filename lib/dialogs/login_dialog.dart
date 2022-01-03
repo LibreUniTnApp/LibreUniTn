@@ -22,7 +22,7 @@ class LoginDialog extends StatelessWidget {
     return CircularProgressDialog(text: Text('Logging in...', style: Theme.of(context).textTheme.headline6));
   }
 
-  void _scheduleLoginFuture(BuildContext context, Client client) {
+  Future<void> _scheduleLoginFuture(BuildContext context, Client client) => 
     Future(() async {
       final loginRequest = await client.login();
       launch(loginRequest.authenticationUri.toString(),
@@ -37,10 +37,11 @@ class LoginDialog extends StatelessWidget {
         await secureStorage.write(
             key: secure_storage_constants.credentialKey,
             value: jsonEncode(authClient.credential.toJson()),
-            iOptions: secure_storage_constants.iOSOptions);
+            iOptions: secure_storage_constants.iOSOptions,
+            aOptions: secure_storage_constants.androidOptions
+        );
         clientManager.login(authClient);
       }
       Navigator.pop(context);
     });
-  }
 }
