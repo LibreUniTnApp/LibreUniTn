@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http show Client;
 import 'package:openid_client/openid_client.dart';
 import './constants.dart';
 
-Future<Client> getClient([http.Client? httpClient]) async {
+Future<Client> getOpenidClient([http.Client? httpClient]) async {
   final issuer = await Issuer.discover(
       Uri.parse('https://idsrv.unitn.it/sts/identity'),
       httpClient: httpClient);

@@ -2,7 +2,7 @@ import 'package:openid_client/openid_client.dart' show Credential;
 import 'package:http/http.dart' as http show Client;
 import './client.dart';
 import './logout_request.dart';
-import './auth.dart';
+import './openid.dart';
 
 class AuthorizedClient extends Client {
   final Credential credential;

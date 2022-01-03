@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http show Client;
-import './auth.dart';
+import './openid.dart';
 import './authorized_client.dart';
 import './login_request.dart';
 
@@ -18,8 +18,10 @@ class Client {
     }
   }
 
+  AuthorizedClient forceDowncast() => this as AuthorizedClient;
+
   Future<LoginRequest> login() async {
-    final openidClient = await getClient(httpClient);
+    final openidClient = await getOpenidClient(httpClient);
     final openidFlow = getAuthorizationFlow(openidClient);
     return LoginRequest(httpClient, openidFlow);
   }
