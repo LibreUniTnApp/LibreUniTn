@@ -24,7 +24,7 @@ class InvocationUriProvider extends StatefulWidget {
 class _InvocationUriProviderState extends State<InvocationUriProvider> {
   String? invocationUri;
   late final StreamSubscription<String?> _subscription;
-  late final _logger = Logger('InvocationURIProvider');
+  late final _logger = Logger('App.InvocationURIProvider');
 
   @override
   void initState() {

@@ -1,20 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:logging/logging.dart';
+import 'package:logging/logging.dart' show Logger, Level;
+import 'package:logging/logging.dart' as logging;
 import './providers/client_provider.dart';
 import './providers/invocation_uri.dart';
 import './navigation_drawer.dart';
 import './themes.dart' as themes;
 
 void main() {
+  logging.hierarchicalLoggingEnabled = true;
   if(kReleaseMode){
-    Logger.root.level = Level.SEVERE;
+    Logger('App').level = Level.SEVERE;
     Logger.root.onRecord.forEach(
             (event) => debugPrint("${event.time} [${event.loggerName}] ${event.level}: ${event.message}")
     );
   } else {
-    Logger.root.level = Level.ALL;
+    Logger('App').level = Level.ALL;
     Logger.root.onRecord.forEach(
             (event) {
           String message = "${event.time} [${event.loggerName}] ${event.level}: ${event.message}";
@@ -56,7 +58,7 @@ class Main extends StatelessWidget {
     final logger = Logger('App.MainScaffold');
     ClientProvider.depend(context);
     logger.finest(
-        () => 'Rebuilding with client ${clientManager.client?.runtimeType?.toString() ?? 'null'}'
+        () => 'Rebuilding with client of type ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );
     return Scaffold(
         appBar: AppBar(),

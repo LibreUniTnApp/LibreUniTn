@@ -15,7 +15,7 @@ import 'package:libreunitrentoapp/secure_storage_constants.dart'
 late final clientManager = ClientManager._fromSecureStorage();
 
 class ClientManager extends ValueNotifier<Client?> {
-  static late final _logger = Logger('ClientManager');
+  static late final _logger = Logger('App.ClientManager');
 
   factory ClientManager._fromSecureStorage() {
     final notifier = ClientManager._(null);

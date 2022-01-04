@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http show Client;
-import './openid.dart';
+import './openid_utils.dart';
 import './authorized_client.dart';
 import './login_request.dart';
 
