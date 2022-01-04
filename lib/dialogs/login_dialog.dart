@@ -3,6 +3,7 @@ import 'dart:convert' show jsonEncode;
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logging/logging.dart';
 import 'package:libreunitrentoapp/API/client.dart';
 import 'package:libreunitrentoapp/providers/client_provider.dart';
 import 'package:libreunitrentoapp/providers/invocation_uri.dart';
@@ -17,19 +18,23 @@ class LoginDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //This will be called only if client is Client
+    final logger = Logger('App.LoginDialog');
+    logger.finest(() => 'client is ${clientManager.client?.runtimeType?.toString() ?? 'null'}');
     final client = clientManager.client as Client;
-    _scheduleLoginFuture(context, client);
+    _scheduleLoginFuture(context, client, logger);
     return CircularProgressDialog(text: Text('Logging in...', style: Theme.of(context).textTheme.headline6));
   }
 
-  Future<void> _scheduleLoginFuture(BuildContext context, Client client) => 
+  Future<void> _scheduleLoginFuture(BuildContext context, Client client, Logger logger) => 
     Future(() async {
       final loginRequest = await client.login();
+      logger.fine('Created LoginRequest with authenticationUri ${loginRequest.authenticationUri}');
       launch(loginRequest.authenticationUri.toString(),
         customTabsOption: customTabOptions,
         safariVCOption: safariViewControllerOptions
       );
       final response = await invocationUriStream.take(1).single;
+      logger.fine('LoginRequest Response is ${response ?? 'null'}');
       if (response != null) {
         final authClient =
             await loginRequest.respondWithCustomUri(Uri.parse(response));
@@ -41,6 +46,7 @@ class LoginDialog extends StatelessWidget {
             aOptions: secure_storage_constants.androidOptions
         );
         clientManager.login(authClient);
+        logger.info('Succesfully Logged in');
       }
       Navigator.pop(context);
     });

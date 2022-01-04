@@ -8,6 +8,7 @@ class Client {
   final http.Client httpClient;
 
   Client() : this.withHttpClient(http.Client());
+
   const Client.withHttpClient(this.httpClient);
 
   AuthorizedClient? downcast() {

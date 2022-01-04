@@ -9,11 +9,14 @@ class AuthorizedClient extends Client {
 
   AuthorizedClient(http.Client httpClient, this.credential)
       : super.withHttpClient(credential.createHttpClient(httpClient));
+
   LogoutRequest logout() =>
       LogoutRequest(httpClient, getEndSessionUri(credential));
 
   static Future<AuthorizedClient> validateBeforeCreating(
-      http.Client httpClient, Credential credential) async {
+      http.Client httpClient,
+      Credential credential
+  ) async {
     final exceptionList = await credential.validateToken().toList();
     if (exceptionList.isEmpty) {
       return AuthorizedClient(httpClient, credential);

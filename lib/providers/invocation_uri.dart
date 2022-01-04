@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart' show EventChannel;
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
 
 const _channel = EventChannel("xyz.libreunitn.invocationUri");
 late final Stream<String?> invocationUriStream =
@@ -16,7 +16,7 @@ class InvocationUriProvider extends StatefulWidget {
   @override
   State<InvocationUriProvider> createState() => _InvocationUriProviderState();
 
-  static String? getInvocationUri(BuildContext cntxt) => cntxt
+  static String? of(BuildContext context) => context
       .dependOnInheritedWidgetOfExactType<_InvocationUriInherited>()!
       .invocationUri;
 }
@@ -24,12 +24,17 @@ class InvocationUriProvider extends StatefulWidget {
 class _InvocationUriProviderState extends State<InvocationUriProvider> {
   String? invocationUri;
   late final StreamSubscription<String?> _subscription;
+  late final _logger = Logger('InvocationURIProvider');
 
   @override
   void initState() {
     super.initState();
     _subscription = invocationUriStream.listen(
-      (invocationUri) => setState(() => this.invocationUri = invocationUri));
+      (invocationUri) {
+        _logger.info('Received ${invocationUri ?? 'null'}');
+        setState(() => this.invocationUri = invocationUri);
+      }
+    );
   }
 
   @override
@@ -39,8 +44,9 @@ class _InvocationUriProviderState extends State<InvocationUriProvider> {
   }
 
   @override
-  Widget build(BuildContext cntxt) => _InvocationUriInherited(
-      child: Builder(builder: widget.child), invocationUri: invocationUri);
+  Widget build(BuildContext context) => _InvocationUriInherited(
+      child: Builder(builder: widget.child), invocationUri: invocationUri
+  );
 }
 
 class _InvocationUriInherited extends InheritedWidget {

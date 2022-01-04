@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart'
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:openid_client/openid_client.dart' show Credential;
 import 'package:http/http.dart' as http show Client;
+import 'package:logging/logging.dart';
 import 'package:libreunitrentoapp/API/client.dart';
 import 'package:libreunitrentoapp/API/authorized_client.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
@@ -14,6 +15,8 @@ import 'package:libreunitrentoapp/secure_storage_constants.dart'
 late final clientManager = ClientManager._fromSecureStorage();
 
 class ClientManager extends ValueNotifier<Client?> {
+  static late final _logger = Logger('ClientManager');
+
   factory ClientManager._fromSecureStorage() {
     final notifier = ClientManager._(null);
     Future(() async {
@@ -22,20 +25,27 @@ class ClientManager extends ValueNotifier<Client?> {
           key: secure_storage_constants.credentialKey,
           iOptions: secure_storage_constants.iOSOptions,
           aOptions: secure_storage_constants.androidOptions
+      ).catchError(
+          (error) {
+            _logger.severe('Error while reading secureStorage', error);
+            return null;
+            //TODO: the error should be shown to the user before continuing. Maybe add a Handler in ClientProvider?
+          }
       );
-      late final Client client;
       if (credentialJson != null) {
         final credential = Credential.fromJson(jsonDecode(credentialJson));
         try {
-          client = await AuthorizedClient.validateBeforeCreating(
-              http.Client(), credential);
-        } on List<Exception> {
-          client = Client();
+          AuthorizedClient client = await AuthorizedClient.validateBeforeCreating(
+              http.Client(),
+              credential
+          );
+          notifier.login(client);
+          return null;
+        } on List<Exception> catch (exceptions) {
+          _logger.severe('Couldn\'t validate Credentials', exceptions);
         }
-      } else {
-        client = Client();
       }
-      notifier._setClient(client);
+      notifier._setClient(Client());
     });
     return notifier;
   }
@@ -45,6 +55,7 @@ class ClientManager extends ValueNotifier<Client?> {
   Client? get client => super.value;
 
   void _setClient(Client client) {
+    _logger.info('setClient called with ${client.runtimeType}');
     super.value = client;
     notifyListeners();
   }
