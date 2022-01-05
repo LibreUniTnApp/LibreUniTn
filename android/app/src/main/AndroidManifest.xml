@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="xyz.libreunitn.libreunitrentoapp">
+    package="xyz.libreunitn">
  <application
       android:label="LibreUniTn"
       android:icon="@mipmap/ic_launcher">

@@ -1,4 +1,4 @@
-package xyz.libreunitn.libreunitrentoapp
+package xyz.libreunitn
 
 import android.os.Bundle
 import android.content.Intent

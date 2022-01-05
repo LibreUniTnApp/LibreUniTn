@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:libreunitrentoapp/API/client.dart';
-import 'package:libreunitrentoapp/providers/client_provider.dart';
-import 'package:libreunitrentoapp/providers/invocation_uri.dart';
+import 'package:libreunitn/API/client.dart';
+import 'package:libreunitn/providers/client_provider.dart';
+import 'package:libreunitn/providers/invocation_uri.dart';
 import './circular_progress_dialog.dart';
 import './utils.dart';
 

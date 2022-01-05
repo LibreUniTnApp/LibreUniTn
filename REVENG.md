@@ -8,3 +8,4 @@ After downloading the APK (I use the link given by the [Aurora Store](https://au
 Launching a web server in that folder (ex. `python -m http.server 8000`) lets us open the app as it would do on the phone.
 From here on out, we can use the browser's tools to Debug and Analyze the application.
 The scripts are minified and webpack has been used to bundle them together, so the chunks are quite hard to follow for static analysis, although in the `main.*.js` file we can find most of the app's code, together with obfuscated constants such as the OAuth2 Client Secret and some of the API endpoints.
+Some possibly useful tools that I haven't tried are [Jalangi](https://github.com/Samsung/jalangi2), [MemInsight](https://github.com/Samsung/meminsight) and [Iroh](https://maierfelix.github.io/Iroh/)

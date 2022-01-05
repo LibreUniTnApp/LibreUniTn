@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:libreunitrentoapp/API/constants.dart';
+import 'package:libreunitn/API/constants.dart';
 import './client.dart';
 import './unitn_http_client.dart';
 
