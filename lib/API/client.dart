@@ -21,9 +21,9 @@ class Client {
 
   AuthorizedClient forceDowncast() => this as AuthorizedClient;
 
-  Future<LoginRequest> login() async {
+  Future<LoginRequest> login([String? state]) async {
     final openidClient = await getOpenidClient(httpClient);
-    final openidFlow = getAuthorizationFlow(openidClient);
+    final openidFlow = getAuthorizationFlow(openidClient, state);
     return LoginRequest(httpClient, openidFlow);
   }
 }

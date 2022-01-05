@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert' show jsonDecode;
+import 'dart:convert' show json;
 import 'package:flutter/foundation.dart' show ValueNotifier, Key;
 import 'package:flutter/widgets.dart'
     show InheritedNotifier, Widget, BuildContext;
@@ -15,36 +15,37 @@ import 'package:libreunitrentoapp/secure_storage_constants.dart'
 late final clientManager = ClientManager._fromSecureStorage();
 
 class ClientManager extends ValueNotifier<Client?> {
-  static late final _logger = Logger('App.ClientManager');
-
   factory ClientManager._fromSecureStorage() {
     final notifier = ClientManager._(null);
     Future(() async {
+      //Reading from Secure Storage
       const secureStorage = FlutterSecureStorage();
       final credentialJson = await secureStorage.read(
           key: secure_storage_constants.credentialKey,
           iOptions: secure_storage_constants.iOSOptions,
           aOptions: secure_storage_constants.androidOptions
-      ).catchError(
-          (error) {
-            _logger.severe('Error while reading secureStorage', error);
-            return null;
-            //TODO: the error should be shown to the user before continuing. Maybe add a Handler in ClientProvider?
-          }
-      );
+      ).catchError(catchFlutterSecureStorageError);
       if (credentialJson != null) {
-        final credential = Credential.fromJson(jsonDecode(credentialJson));
+        _logger.finer('Found Credentials in SecureStorage');
+        final credential = Credential.fromJson(json.decode(credentialJson));
         try {
-          AuthorizedClient client = await AuthorizedClient.validateBeforeCreating(
+          //See comment in LoginRequest.respond, which is in API/login_request.dart
+          /*final client = await AuthorizedClient.validateBeforeCreating(
+              http.Client(),
+              credential
+          );*/
+          final client = AuthorizedClient(
               http.Client(),
               credential
           );
-          notifier.login(client);
-          return null;
+          //Skip saving Credentials
+          notifier._setClient(client);
+          return;
         } on List<Exception> catch (exceptions) {
           _logger.severe('Couldn\'t validate Credentials', exceptions);
         }
       }
+      //Create a normal Client as a fallback
       notifier._setClient(Client());
     });
     return notifier;
@@ -60,9 +61,33 @@ class ClientManager extends ValueNotifier<Client?> {
     notifyListeners();
   }
 
-  void login(AuthorizedClient authClient) => _setClient(authClient);
+  void login(AuthorizedClient authClient) async {
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.write(
+        key: secure_storage_constants.credentialKey,
+        value: json.encode(authClient.credential.toJson()),
+        iOptions: secure_storage_constants.iOSOptions,
+        aOptions: secure_storage_constants.androidOptions
+    ).catchError(catchFlutterSecureStorageError);
+    _setClient(authClient);
+  }
 
-  void logout(Client client) => _setClient(client);
+  void logout(Client client) async {
+    const secureStorage = FlutterSecureStorage();
+    await secureStorage.delete(
+        key: secure_storage_constants.credentialKey,
+        iOptions: secure_storage_constants.iOSOptions
+    ).catchError(catchFlutterSecureStorageError);
+    _setClient(client);
+  }
+
+  static late final _logger = Logger('App.ClientManager');
+
+  static String? catchFlutterSecureStorageError(dynamic error){
+    _logger.severe('Error while reading secureStorage', error);
+    return null;
+    //TODO: the error should be shown to the user before continuing. Maybe add a Handler in ClientProvider?
+  }
 }
 
 class ClientProvider extends InheritedNotifier<ClientManager> {

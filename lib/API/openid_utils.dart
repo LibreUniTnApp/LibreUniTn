@@ -13,8 +13,8 @@ Future<Client> getOpenidClient([http.Client? httpClient]) async {
       clientSecret: 'FplHsHYTvmMN7hvogSzf', httpClient: httpClient);
 }
 
-Flow getAuthorizationFlow(Client client) =>
-    Flow.authorizationCodeWithPKCE(client, state: _generateState())
+Flow getAuthorizationFlow(Client client, [ String? state ]) =>
+    Flow.authorizationCodeWithPKCE(client, state: state ?? _generateState())
       ..redirectUri = Uri.parse(authorizationRedirectUri)
       ..scopes.addAll(const [
 //        'openid', should be already in the array
@@ -27,15 +27,15 @@ Flow getAuthorizationFlow(Client client) =>
         'icts://studente/carriera',
         'icts://opera/mensa'
       ]);
-//TODO: add "&access_type=offline" to Authorization URL, even though it doesn't seem necessary
 
 Uri? getEndSessionUri(Credential credential) => credential.generateLogoutUrl(
     redirectUri: Uri.parse(logoutRedirectUri),
-    state: _generateState());
+    state: _generateState()
+);
 
 String _generateState() {
   final rng = Random();
-  final Uint8List randomByteString = Uint8List(16);
+  final Uint8List randomByteString = Uint8List(10);
   for (int i = 0; i < randomByteString.length; ++i) {
     randomByteString[i] = rng.nextInt(0x100000000);
   }

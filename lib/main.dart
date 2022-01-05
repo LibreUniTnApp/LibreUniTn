@@ -16,12 +16,13 @@ void main() {
             (event) => debugPrint("${event.time} [${event.loggerName}] ${event.level}: ${event.message}")
     );
   } else {
+    Logger.root.level = Level.INFO;
     Logger('App').level = Level.ALL;
     Logger.root.onRecord.forEach(
             (event) {
           String message = "${event.time} [${event.loggerName}] ${event.level}: ${event.message}";
           if(event.error != null){
-            message += ", ${event.error}";
+            message += " (${event.error})";
           }
           debugPrint(message);
         }
@@ -67,7 +68,7 @@ class Main extends StatelessWidget {
               ? InvocationUriProvider(
                   child: (context) {
                     String invocationUri = InvocationUriProvider.of(context) ?? 'NULL';
-                    logger.info('Received URI $invocationUri');
+                    logger.finer('Received URI $invocationUri');
                     return Text(invocationUri);
                   },
                 )

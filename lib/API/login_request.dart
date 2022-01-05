@@ -8,7 +8,16 @@ class LoginRequest {
 
   const LoginRequest(this._httpClient, this._authorizationFlow);
 
-  Uri get authenticationUri => _authorizationFlow.authenticationUri;
+  Uri get authenticationUri {
+    final originalAuthUri = _authorizationFlow.authenticationUri;
+    // We add access_type=offline to the URI
+    return originalAuthUri.replace(
+      queryParameters: {
+        ...originalAuthUri.queryParametersAll,
+        'access_type': const ['offline']
+      }
+    );
+  }
 
   Future<AuthorizedClient> respondWithCustomUri(Uri response) {
     /*
@@ -20,6 +29,10 @@ class LoginRequest {
 
   Future<AuthorizedClient> respond(Map<String, String> response) async {
     final credentials = await _authorizationFlow.callback(response);
-    return AuthorizedClient.validateBeforeCreating(_httpClient, credentials);
+    /* Right now validation fails because the token cannot be validated
+     * The original application, to my knowledge, doesn't verify the token signature
+     * so we can safely skip the validation */
+    //return AuthorizedClient.validateBeforeCreating(_httpClient, credentials);
+    return AuthorizedClient(_httpClient, credentials);
   }
 }

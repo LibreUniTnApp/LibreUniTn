@@ -17,7 +17,7 @@ class NavigationDrawer extends StatelessWidget {
             builder: (context, layout) {
               ClientProvider.depend(context);
               logger.finest(
-                  () => 'Building with client ${clientManager.client?.runtimeType?.toString() ?? 'null'}'
+                  () => 'Building with client ${clientManager.client?.runtimeType.toString() ?? 'null'}'
               );
 
               final headerHeight = layout.maxHeight / 5;
@@ -73,7 +73,7 @@ class DrawerHeader extends StatelessWidget {
     final logger = Logger('App.MainScaffold.Drawer.Header');
     ClientProvider.depend(context);
     logger.finest(
-            () => 'Building with client ${clientManager.client?.runtimeType?.toString() ?? 'null'}'
+            () => 'Building with client ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );
 
     Widget? userNameWidget;
