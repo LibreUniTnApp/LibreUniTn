@@ -1,16 +1,12 @@
-# libreunitrentoapp
+# LibreUniTn
 
-A new Flutter project.
+Free and Open Source Reimplementation of UniTnApp
 
-## Getting Started
+## Contributing
+Currently, only the login and logout flow are implemented and mostly working, help is needed not only to implement other features, but also to improve comments, logging, tests, documentation
 
-This project is a starting point for a Flutter application.
+If you want to signal a problem or talk about a feature, just open an issue. If you want to send in a patch, fork the repo, commit your changes and then open a pull request. Both English and Italian are accepted
 
-A few resources to get you started if this is your first Flutter project:
+I plan to set up a `git-send-email` server in order to receive "anonymous" (not connected to a GitHub account) pull request, but for right now, you can commit to your fork changing `user.name` and `user.email` using `git config user.name` and `git config user.name`, therefore changing what will be added to the repository's history.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## [Help Reverse Engineering](./REVENG.md)
