@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http show Client;
 import 'package:logging/logging.dart';
 import 'package:libreunitrentoapp/API/client.dart';
 import 'package:libreunitrentoapp/API/authorized_client.dart';
+import 'package:libreunitrentoapp/API/unitn_http_client.dart';
 import 'package:libreunitrentoapp/secure_storage_constants.dart'
     as secure_storage_constants;
 
@@ -35,7 +36,7 @@ class ClientManager extends ValueNotifier<Client?> {
               credential
           );*/
           final client = AuthorizedClient(
-              http.Client(),
+              UnitnHttpClient(),
               credential
           );
           //Skip saving Credentials

@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http show Client;
 import 'package:openid_client/openid_client.dart' show Flow;
 import './authorized_client.dart';
+import './unitn_http_client.dart';
 
 class LoginRequest {
-  final http.Client _httpClient;
+  final UnitnHttpClient _httpClient;
   final Flow _authorizationFlow;
 
   const LoginRequest(this._httpClient, this._authorizationFlow);

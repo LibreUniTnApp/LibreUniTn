@@ -1,10 +1,12 @@
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http show Client;
+import 'package:meta/meta.dart';
 import 'package:libreunitrentoapp/API/constants.dart';
 import './client.dart';
+import './unitn_http_client.dart';
 
 class LogoutRequest {
-  final http.Client _httpClient;
+  static late final Uri _logoutRedirect = Uri.parse(logoutRedirectUri);
+
+  final UnitnHttpClient _httpClient;
   final Uri? logoutUrl;
   final String? _state;
 
@@ -12,9 +14,9 @@ class LogoutRequest {
       : _state = logoutUrl?.queryParameters['state']!;
 
   Client respond(Uri uri) {
-    if(uri.scheme == 'unitrentoapp' && uri.host == 'endsession') {
+    if(uri.scheme == _logoutRedirect.scheme && uri.host == _logoutRedirect.host) {
       if(uri.queryParameters['state'] == _state){
-        return Client();
+        return Client.withClient(_httpClient);
       } else {
         throw LogoutException(uri, 'State does not match');
       }

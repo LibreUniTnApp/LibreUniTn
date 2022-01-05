@@ -1,14 +1,22 @@
+import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http show Client;
 import './openid_utils.dart';
 import './authorized_client.dart';
 import './login_request.dart';
+import './unitn_http_client.dart';
 
 class Client {
-  //TODO: Replace http.Client with a class that adds "Accept: application/json, text/plain, */*" and "unitn-culture: <language>"
   final http.Client httpClient;
 
-  Client() : this.withHttpClient(http.Client());
-
+  /* WARNING: This is not ok, language should always be specified.
+   * since there's no easy way in the application to set a language, this
+   * will have to do for now. the defaultLanguage() constructor should be preferred */
+  //TODO: Make language a required positional parameter
+  @deprecated
+  Client([String language = 'en']) : this.withHttpClient(UnitnHttpClient(language));
+  Client.defaultLanguage() : this.withHttpClient(UnitnHttpClient('en'));
+  Client.withClient(UnitnHttpClient client) : this.withHttpClient(client);
+  @protected
   const Client.withHttpClient(this.httpClient);
 
   AuthorizedClient? downcast() {
@@ -21,9 +29,9 @@ class Client {
 
   AuthorizedClient forceDowncast() => this as AuthorizedClient;
 
-  Future<LoginRequest> login([String? state]) async {
+  Future<LoginRequest> login() async {
     final openidClient = await getOpenidClient(httpClient);
-    final openidFlow = getAuthorizationFlow(openidClient, state);
-    return LoginRequest(httpClient, openidFlow);
+    final openidFlow = getAuthorizationFlow(openidClient);
+    return LoginRequest(httpClient as UnitnHttpClient, openidFlow);
   }
 }

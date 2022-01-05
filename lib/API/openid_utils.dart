@@ -13,8 +13,8 @@ Future<Client> getOpenidClient([http.Client? httpClient]) async {
       clientSecret: 'FplHsHYTvmMN7hvogSzf', httpClient: httpClient);
 }
 
-Flow getAuthorizationFlow(Client client, [ String? state ]) =>
-    Flow.authorizationCodeWithPKCE(client, state: state ?? _generateState())
+Flow getAuthorizationFlow(Client client) =>
+    Flow.authorizationCodeWithPKCE(client, state: _generateState())
       ..redirectUri = Uri.parse(authorizationRedirectUri)
       ..scopes.addAll(const [
 //        'openid', should be already in the array
