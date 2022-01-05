@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:libreunitrentoapp/API/authorized_client.dart';
+import 'package:libreunitrentoapp/API/client.dart';
 import 'package:libreunitrentoapp/providers/client_provider.dart';
 import 'package:libreunitrentoapp/providers/invocation_uri.dart';
 import './circular_progress_dialog.dart';
@@ -34,10 +35,12 @@ class LogoutDialog extends StatelessWidget {
           final response = await invocationUriStream.take(1).single;
           logger.fine('LogoutRequest response is ${response ?? 'null'}');
           if (response != null) {
-            final client = logoutRequest.respond(response);
+            final client = logoutRequest.respond(Uri.parse(response));
             clientManager.logout(client);
             logger.info('Successfully Logged out');
           }
+        } else {
+          clientManager.logout(Client());
         }
       } catch (error) {
         logger.severe('Received error while logging out', error);

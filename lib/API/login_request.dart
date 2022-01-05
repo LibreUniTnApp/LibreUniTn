@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http show Client;
 import 'package:openid_client/openid_client.dart' show Flow;
 import './authorized_client.dart';
@@ -20,11 +21,11 @@ class LoginRequest {
   }
 
   Future<AuthorizedClient> respondWithCustomUri(Uri response) {
-    /*
-    TODO:
-    if(response.scheme != 'unitrentoapp') throw Error
-    */
-    return respond(response.queryParameters);
+    if(response.scheme == 'unitrentoapp' && response.host == 'callback'){
+      return respond(response.queryParameters);
+    } else {
+      throw LoginException(response, 'Invalid Login URI');
+    }
   }
 
   Future<AuthorizedClient> respond(Map<String, String> response) async {
@@ -35,4 +36,12 @@ class LoginRequest {
     //return AuthorizedClient.validateBeforeCreating(_httpClient, credentials);
     return AuthorizedClient(_httpClient, credentials);
   }
+}
+
+@immutable
+class LoginException implements Exception {
+  final Uri responseUri;
+  final String message;
+
+  const LoginException(this.responseUri, this.message);
 }
