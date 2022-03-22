@@ -12,7 +12,7 @@ class Client {
    * since there's no easy way in the application to set a language, this
    * will have to do for now. the defaultLanguage() constructor should be preferred */
   //TODO: Make language a required positional parameter
-  @deprecated
+  @Deprecated("Language should always be specified")
   Client([String language = 'en']) : this.withHttpClient(UnitnHttpClient(language));
   Client.defaultLanguage() : this.withHttpClient(UnitnHttpClient('en'));
   Client.withClient(UnitnHttpClient client) : this.withHttpClient(client);
