@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart' show Logger, Level;
 import 'package:logging/logging.dart' as logging;
-import './providers/client_provider.dart';
+import 'providers/client/client_provider.dart';
 import './providers/invocation_uri.dart';
 import './navigation_drawer.dart';
 import './themes.dart' as themes;
@@ -40,10 +40,12 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     /* final logger = Logger('App');
      * logger.finest(() => 'Building with theme $theme'); */
-    return MaterialApp(
-        title: 'LibreUniTn',
-        theme: themes.lightTheme,
-        home: ClientProvider(child: const Main())
+    return ClientProvider(
+      child: MaterialApp(
+          title: 'LibreUniTn',
+          theme: themes.lightTheme,
+          home: const Main()
+      )
     );
   }
 }
@@ -57,7 +59,7 @@ class Main extends StatelessWidget {
      * the constructor caches objects by name,
      * but I'm not sure whether the lookup is cheap enough */
     final logger = Logger('App.MainScaffold');
-    ClientProvider.depend(context);
+    final clientManager = ClientProvider.of(context);
     logger.finest(
         () => 'Rebuilding with client of type ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );

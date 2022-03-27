@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openid_client/openid_client.dart' show UserInfo;
 import 'package:logging/logging.dart';
-import './providers/client_provider.dart';
+import 'providers/client/client_provider.dart';
 import './API/authorized_client.dart';
 import './dialogs/login_dialog.dart';
 import './dialogs/logout_dialog.dart';
@@ -15,7 +15,7 @@ class NavigationDrawer extends StatelessWidget {
     return Drawer(
         child: LayoutBuilder(
             builder: (context, layout) {
-              ClientProvider.depend(context);
+              final clientManager = ClientProvider.of(context);
               logger.finest(
                   () => 'Building with client ${clientManager.client?.runtimeType.toString() ?? 'null'}'
               );
@@ -71,7 +71,7 @@ class DrawerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final logger = Logger('App.MainScaffold.Drawer.Header');
-    ClientProvider.depend(context);
+    final clientManager = ClientProvider.of(context);
     logger.finest(
             () => 'Building with client ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );
