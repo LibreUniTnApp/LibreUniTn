@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:libreunitn/API/authorized_client.dart';
 import 'package:libreunitn/API/client.dart';
-import 'package:libreunitn/providers/client_provider.dart';
+import 'package:libreunitn/providers/client/client_provider.dart';
 import 'package:libreunitn/providers/invocation_uri.dart';
 import './circular_progress_dialog.dart';
 import './utils.dart';
 
+//TODO: Depend on Inherited widget and schedule Future only once, maybe check whether logout has been successful, show error message otherwise
 class LogoutDialog extends StatelessWidget {
   const LogoutDialog({Key? key}) : super(key: key);
 

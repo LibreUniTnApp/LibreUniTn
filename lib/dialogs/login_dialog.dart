@@ -2,11 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:libreunitn/API/client.dart';
-import 'package:libreunitn/providers/client_provider.dart';
+import 'package:libreunitn/providers/client/client_provider.dart';
 import 'package:libreunitn/providers/invocation_uri.dart';
 import './circular_progress_dialog.dart';
 import './utils.dart';
 
+//TODO: Depend on Inherited widget and schedule Future only once, maybe check whether login has been successful, show error message otherwise
 class LoginDialog extends StatelessWidget {
   const LoginDialog({Key? key}) : super(key: key);
 
@@ -20,7 +21,7 @@ class LoginDialog extends StatelessWidget {
     return CircularProgressDialog(text: Text('Logging in...', style: Theme.of(context).textTheme.headline6));
   }
 
-  Future<void> _scheduleLoginFuture(BuildContext context, Client client, Logger logger) => 
+  Future<void> _scheduleLoginFuture(BuildContext context, Client client, Logger logger) =>
     Future(() async {
       try {
         final loginRequest = await client.login();
