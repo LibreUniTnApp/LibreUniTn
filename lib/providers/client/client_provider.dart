@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter/widgets.dart'
     show InheritedWidget, StatefulWidget, State, Widget, BuildContext;
+import 'package:libreunitn/API/client.dart' show Client;
 import './client_manager.dart' show ClientManager;
 
 class ClientProvider extends StatefulWidget {
@@ -40,14 +41,17 @@ class _ClientProviderState extends State<ClientProvider> {
 
 class _ClientInherited extends InheritedWidget {
   final ClientManager _manager;
+  late final Client? _clientPtr;
 
   _ClientInherited({
     Key? key,
     required Widget child,
-    required ClientManager manager
-  }): _manager = manager, super(key: key, child: child);
+    required ClientManager manager,
+  }): _manager = manager, super(key: key, child: child) {
+    _clientPtr = _manager.client;
+  }
 
   @override
   bool updateShouldNotify(_ClientInherited oldWidget) =>
-      _manager.client != oldWidget._manager.client;
+      _clientPtr != oldWidget._clientPtr;
 }
