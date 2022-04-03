@@ -5,7 +5,6 @@ import android.content.Intent
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel
 
 
@@ -14,18 +13,18 @@ class MainActivity: FlutterActivity() {
 	private lateinit var eventChannel: EventChannel
 	private var eventSink: EventChannel.EventSink? = null
 
-	protected override fun onCreate(savedInstanceState: Bundle?) {
+	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		val intent = this.getIntent()
+		val intent = this.intent
 		if(this.isValidIntent(intent)){
-			this.lastIntentUri = intent.getDataString()
+			this.lastIntentUri = intent.dataString
 		}
 	}
 
 	override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 		super.configureFlutterEngine(flutterEngine)
 		this.eventChannel = EventChannel(
-			flutterEngine.getDartExecutor().getBinaryMessenger(),
+			flutterEngine.dartExecutor.binaryMessenger,
 			"xyz.libreunitn.invocationUri"
 		)
 		this.eventChannel.setStreamHandler(
@@ -47,13 +46,14 @@ class MainActivity: FlutterActivity() {
 		super.cleanUpFlutterEngine(flutterEngine)
 	}
 
-	protected override fun onNewIntent(intent: Intent){
+	override fun onNewIntent(intent: Intent){
 		super.onNewIntent(intent)
 		if(isValidIntent(intent)){
-			lastIntentUri = intent.getDataString()
+			lastIntentUri = intent.dataString
 			eventSink?.success(lastIntentUri)
 		}
 	}
 
-	private fun isValidIntent(intent: Intent): Boolean = Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getDataString() != null
+	private fun isValidIntent(intent: Intent): Boolean =
+					Intent.ACTION_VIEW == intent.action && intent.dataString != null
 }
