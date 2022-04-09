@@ -1,20 +1,11 @@
-import 'package:openid_client/openid_client.dart' show Credential;
+import 'package:http/http.dart' as http;
 import './client.dart';
-import './logout_request.dart';
-import './openid_utils.dart';
-import './unitn_http_client.dart';
-import './login_request.dart';
 
 class AuthorizedClient extends Client {
-  final UnitnHttpClient _unauthenticatedHttpClient;
   final Credential credential;
 
-  /* This constructor wraps the UnitnHttpClient in another client that adds the
-   * access token to the requests */
-  AuthorizedClient(this._unauthenticatedHttpClient, this.credential):
-        super.withHttpClient(
-          credential.createHttpClient(_unauthenticatedHttpClient)
-        );
+  AuthorizedClient(Client client, this.credential):
+        super.fromClient(client);
 
   LogoutRequest logout() =>
       LogoutRequest(_unauthenticatedHttpClient, getEndSessionUri(credential));
@@ -32,8 +23,14 @@ class AuthorizedClient extends Client {
   }
 
   @override
-  Future<LoginRequest> login() {
-    //TODO: Improve error
+  Future<AuthorizedClient> login() {
+    //TODO: Improve error, maybe return this?
     throw Exception('Logout before logging in again');
+  }
+
+  //TODO: Add refresh code, insert token in Request
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    return super.send(request);
   }
 }

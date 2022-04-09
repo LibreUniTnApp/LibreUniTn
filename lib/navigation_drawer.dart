@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:openid_client/openid_client.dart' show UserInfo;
 import 'package:logging/logging.dart';
 import 'providers/client/client_provider.dart';
 import './API/authorized_client.dart';
@@ -76,9 +75,10 @@ class DrawerHeader extends StatelessWidget {
             () => 'Building with client ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );
 
-    Widget? userNameWidget;
+    late final Widget? userNameWidget;
     if(clientManager.client is AuthorizedClient){
-      userNameWidget = FutureBuilder<UserInfo>(
+      userNameWidget = null;
+      /*userNameWidget = FutureBuilder<UserInfo>(
         future: (clientManager.client as AuthorizedClient)
             .credential
             .getUserInfo(),
@@ -95,7 +95,9 @@ class DrawerHeader extends StatelessWidget {
             return Container();
           }
         }
-      );
+      );*/
+    } else {
+      userNameWidget = null;
     }
 
     return SizedBox(

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:libreunitn/providers/client/client_manager.dart';
 import 'package:logging/logging.dart';
 import 'package:libreunitn/providers/client/client_provider.dart';
-import 'package:libreunitn/providers/invocation_uri.dart';
 import './circular_progress_dialog.dart';
-import './utils.dart';
 
 class LoginDialog extends StatefulWidget {
 
@@ -42,21 +40,8 @@ class _LoginDialogState extends State<LoginDialog> {
     if(_loginFuture != null) {
       _loginFuture = Future(() async {
         try {
-          final loginRequest = await (clientManager.client)!.login();
-          _logger.fine(
-              'Created LoginRequest with authenticationUri ${loginRequest
-                  .authenticationUri}');
-          launch(loginRequest.authenticationUri.toString());
-          final response = await invocationUriStream
-              .take(1)
-              .single;
-          _logger.fine('LoginRequest Response is ${response ?? 'null'}');
-          if (response != null) {
-            final authClient =
-            await loginRequest.respondWithCustomUri(Uri.parse(response));
-            clientManager.login(authClient);
-            _logger.info('Successfully Logged in');
-          }
+          final authClient = await (clientManager.client)!.login();
+          clientManager.login(authClient);
         } catch (error) {
           _logger.severe('Received error(s) while logging in', error);
         } finally {

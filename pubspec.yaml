@@ -35,10 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   flutter_secure_storage: ^5.0.2
-  openid_client: ^0.4.3
   http: ^0.13.4
   logging: ^1.0.2
-  flutter_custom_tabs: ^1.0.4
+  flutter_appauth: ^2.4.1
 
 dev_dependencies:
   flutter_test:

@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert' show json;
 import 'package:flutter/widgets.dart' show StateSetter;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:openid_client/openid_client.dart' show Credential;
 import 'package:logging/logging.dart';
 import 'package:libreunitn/API/client.dart';
 import 'package:libreunitn/API/authorized_client.dart';
-import 'package:libreunitn/API/unitn_http_client.dart';
 import 'package:libreunitn/secure_storage_constants.dart'
   as secure_storage_constants;
 
