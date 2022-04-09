@@ -42,7 +42,7 @@ class _LogoutDialogState extends State<LogoutDialog> {
     if(_logoutFuture != null) {
       _logoutFuture = Future(() async {
         try {
-          final client = (clientManager.client as AuthorizedClient).logout();
+          final client = await (clientManager.client as AuthorizedClient).logout();
           clientManager.logout(client);
         } catch (error) {
           clientManager.logout(Client());

@@ -1,25 +1,30 @@
 import 'package:http/http.dart' as http;
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:logging/logging.dart';
 import './client.dart';
+import './credentials.dart';
+import './constants.dart' as constants;
 
 class AuthorizedClient extends Client {
-  final Credential credential;
+  @override
+  late final Logger _logger = Logger('AuthorizedClient');
 
-  AuthorizedClient(Client client, this.credential):
+  final Credentials credentials;
+
+  AuthorizedClient(Client client, this.credentials):
         super.fromClient(client);
 
-  LogoutRequest logout() =>
-      LogoutRequest(_unauthenticatedHttpClient, getEndSessionUri(credential));
-
-  static Future<AuthorizedClient> validateBeforeCreating(
-      UnitnHttpClient httpClient,
-      Credential credential
-  ) async {
-    final exceptionList = await credential.validateToken().toList();
-    if (exceptionList.isEmpty) {
-      return AuthorizedClient(httpClient, credential);
-    } else {
-      throw exceptionList;
-    }
+  Future<Client> logout() async {
+    final appAuth = FlutterAppAuth();
+    //TODO: Maybe wrap in a try{}
+    await appAuth.endSession(
+      EndSessionRequest(
+        idTokenHint: credentials.idToken,
+        postLogoutRedirectUrl: constants.logoutRedirectUri,
+        discoveryUrl: constants.discoveryUrl
+      )
+    );
+    return Client.fromClient(this);
   }
 
   @override
@@ -31,6 +36,7 @@ class AuthorizedClient extends Client {
   //TODO: Add refresh code, insert token in Request
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
+    //super.send adds generic headers and delegates to http.Client
     return super.send(request);
   }
 }

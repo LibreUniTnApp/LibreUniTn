@@ -1,15 +1,17 @@
 import 'dart:async';
-import 'dart:convert' show json;
 import 'package:flutter/widgets.dart' show StateSetter;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:libreunitn/API/credentials.dart';
 import 'package:logging/logging.dart';
+import 'package:dart_json_mapper/dart_json_mapper.dart' show JsonMapper;
+import 'package:libreunitn/main.dart' show jsonMapperInitialized;
 import 'package:libreunitn/API/client.dart';
 import 'package:libreunitn/API/authorized_client.dart';
 import 'package:libreunitn/secure_storage_constants.dart'
   as secure_storage_constants;
 
 class ClientManager {
-  static late final _logger = Logger('App.ClientManager');
+  late final _logger = Logger('App.ClientManager');
 
   Client? _client;
   Client? get client => _client;
@@ -20,7 +22,7 @@ class ClientManager {
 
   factory ClientManager.fromSecureStorage(StateSetter updateFunction){
     final manager = ClientManager._withClient(null, updateFunction);
-    _scheduleReadingClientFromStorage(manager);
+    manager._scheduleReadingClientFromStorage();
     return manager;
   }
 
@@ -31,10 +33,11 @@ class ClientManager {
 
   void login(AuthorizedClient authClient) async {
     _setClient(authClient);
+    await jsonMapperInitialized;
     const secureStorage = FlutterSecureStorage();
     await secureStorage.write(
         key: secure_storage_constants.credentialKey,
-        value: json.encode(authClient.credential.toJson()),
+        value: JsonMapper.serialize(authClient.credentials),
         iOptions: secure_storage_constants.iOSOptions,
         aOptions: secure_storage_constants.androidOptions
     ).catchError(_catchFlutterSecureStorageError);
@@ -49,7 +52,7 @@ class ClientManager {
     _setClient(client);
   }
 
-  static Future _scheduleReadingClientFromStorage(ClientManager manager) =>
+  Future _scheduleReadingClientFromStorage() =>
       Future(() async {
         //Reading from Secure Storage
         const secureStorage = FlutterSecureStorage();
@@ -61,29 +64,25 @@ class ClientManager {
 
         if (credentialJson != null) {
           _logger.finer('Found Credentials in SecureStorage');
-          final credential = Credential.fromJson(json.decode(credentialJson));
+          await jsonMapperInitialized;
+          final credentials = JsonMapper.fromJson<Credentials>(credentialJson)!;
           try {
-            //See comment in LoginRequest.respond, which is in API/login_request.dart
-            /*final client = await AuthorizedClient.validateBeforeCreating(
-              http.Client(),
-              credential
-          );*/
             final client = AuthorizedClient(
-                UnitnHttpClient(),
-                credential
+                Client(),
+                credentials
             );
             //Skip saving Credentials
-            manager._setClient(client);
+            _setClient(client);
             return;
           } on List<Exception> catch (exceptions) {
             _logger.severe('Couldn\'t validate Credentials', exceptions);
           }
         }
         //Create a normal Client as a fallback
-        manager._setClient(Client());
+        _setClient(Client());
       });
   
-  static String? _catchFlutterSecureStorageError(dynamic error){
+  String? _catchFlutterSecureStorageError(dynamic error){
     _logger.severe('Error while reading secureStorage', error);
     return null;
     //TODO: the error should be shown to the user before continuing. Maybe add a Handler in ClientProvider?

@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart' show Logger, Level;
 import 'package:logging/logging.dart' as logging;
+import 'package:dart_json_mapper/dart_json_mapper.dart' show JsonMapper;
+import 'package:libreunitn/main.mapper.g.dart';
 import 'providers/client/client_provider.dart';
 import './providers/invocation_uri.dart';
 import './navigation_drawer.dart';
 import './themes.dart' as themes;
 
+late final Future<JsonMapper> jsonMapperInitialized = initializeJsonMapperAsync();
+
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   logging.hierarchicalLoggingEnabled = true;
   if(kReleaseMode){
     Logger('App').level = Level.SEVERE;
@@ -28,7 +33,6 @@ void main() {
         }
     );
   }
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   runApp(const Application());
 }
 

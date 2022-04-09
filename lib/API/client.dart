@@ -1,9 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:logging/logging.dart';
 import './authorized_client.dart';
+import './credentials.dart';
 import './constants.dart' as constants;
 
 class Client extends http.BaseClient {
+  late final Logger _logger = Logger('Client');
+
   final String language;
 
   /* WARNING: This is not ok, language should always be specified.
@@ -41,8 +45,9 @@ class Client extends http.BaseClient {
       )
     );
     if(tokenResponse != null){
-      //TODO: Validation should be done and the tokens should be stored in another class
-      return AuthorizedClient(this, tokenResponse);
+      _logger.fine(()=>'Received $tokenResponse');
+      final credentials = Credentials.fromTokenResponse(tokenResponse);
+      return AuthorizedClient(this, credentials);
     } else {
       //TODO: Handle error
       throw "No Response";
