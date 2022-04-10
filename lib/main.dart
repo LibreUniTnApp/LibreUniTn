@@ -6,7 +6,6 @@ import 'package:logging/logging.dart' as logging;
 import 'package:dart_json_mapper/dart_json_mapper.dart' show JsonMapper;
 import 'package:libreunitn/main.mapper.g.dart';
 import 'providers/client/client_provider.dart';
-import './providers/invocation_uri.dart';
 import './navigation_drawer.dart';
 import './themes.dart' as themes;
 
@@ -21,8 +20,9 @@ void main() {
             (event) => debugPrint("${event.time} [${event.loggerName}] ${event.level}: ${event.message}")
     );
   } else {
-    Logger.root.level = Level.INFO;
-    Logger('App').level = Level.ALL;
+    //Logger.root.level = Level.INFO;
+    //Logger('App').level = Level.ALL;
+    Logger.root.level = Level.ALL;
     Logger.root.onRecord.forEach(
             (event) {
           String message = "${event.time} [${event.loggerName}] ${event.level}: ${event.message}";
@@ -71,13 +71,7 @@ class Main extends StatelessWidget {
         appBar: AppBar(),
         body: Center(
           child: clientManager.client != null
-              ? InvocationUriProvider(
-                  child: (context) {
-                    String invocationUri = InvocationUriProvider.of(context) ?? 'NULL';
-                    logger.finer('Received URI $invocationUri');
-                    return Text(invocationUri);
-                  },
-                )
+              ? Text(clientManager.client.runtimeType.toString())
               : const CircularProgressIndicator(),
         ),
         drawer: const NavigationDrawer());
