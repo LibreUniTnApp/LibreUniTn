@@ -12,12 +12,6 @@ class AuthorizedClient extends Client {
   AuthorizedClient(Client client, this.credentials):
         super.fromClient(client);
 
-  @override
-  Future<AuthorizedClient> login() {
-    //TODO: Improve error, maybe return this?
-    throw Exception('Logout before logging in again');
-  }
-
   //TODO: Add refresh code, insert token in Request
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
