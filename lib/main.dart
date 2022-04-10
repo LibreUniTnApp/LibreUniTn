@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart' show Logger, Level;
 import 'package:logging/logging.dart' as logging;
 import 'package:dart_json_mapper/dart_json_mapper.dart' show JsonMapper;
@@ -48,6 +49,15 @@ class Application extends StatelessWidget {
       child: MaterialApp(
           title: 'LibreUniTn',
           theme: themes.lightTheme,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''),
+            Locale('it', '')
+          ],
           home: const Main()
       )
     );
