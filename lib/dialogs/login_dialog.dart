@@ -15,6 +15,7 @@ class LoginDialog extends StatefulWidget {
 
 class _LoginDialogState extends State<LoginDialog> {
   late final Logger _logger = Logger('App.LoginDialog');
+  late final ClientManager _manager;
 
   Future? _loginFuture;
 
@@ -37,8 +38,7 @@ class _LoginDialogState extends State<LoginDialog> {
       BuildContext context,
       ClientManager clientManager
       ) {
-    if(_loginFuture != null) {
-      _loginFuture = Future(() async {
+      _loginFuture ??= Future(() async {
         try {
           final authClient = await (clientManager.client)!.login();
           clientManager.login(authClient);
@@ -48,6 +48,5 @@ class _LoginDialogState extends State<LoginDialog> {
           Navigator.pop(context);
         }
       });
-    }
   }
 }

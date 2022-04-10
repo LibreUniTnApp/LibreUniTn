@@ -39,18 +39,16 @@ class _LogoutDialogState extends State<LogoutDialog> {
       BuildContext context,
       ClientManager clientManager
     ) {
-    if(_logoutFuture != null) {
-      _logoutFuture = Future(() async {
-        try {
-          final client = await (clientManager.client as AuthorizedClient).logout();
-          clientManager.logout(client);
-        } catch (error) {
-          clientManager.logout(Client());
-          _logger.severe('Received error while logging out', error);
-        } finally {
-          Navigator.pop(context);
-        }
-      });
-    }
+    _logoutFuture ??= Future(() async {
+      try {
+        final client = await (clientManager.client as AuthorizedClient).logout();
+        clientManager.logout(client);
+      } catch (error) {
+        clientManager.logout(Client());
+        _logger.severe('Received error while logging out', error);
+      } finally {
+        Navigator.pop(context);
+      }
+    });
   }
 }
