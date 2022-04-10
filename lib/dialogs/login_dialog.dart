@@ -17,7 +17,6 @@ class LoginDialog extends StatefulWidget {
 
 class _LoginDialogState extends State<LoginDialog> {
   late final Logger _logger = Logger('App.LoginDialog');
-  late final ClientManager _manager;
 
   Future? _loginFuture;
 

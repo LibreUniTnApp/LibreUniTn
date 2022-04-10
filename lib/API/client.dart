@@ -1,10 +1,7 @@
 import 'package:meta/meta.dart' show protected;
 import 'package:http/http.dart' as http;
-import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:logging/logging.dart';
 import './authorized_client.dart';
-import './credentials.dart';
-import './constants.dart' as constants;
 
 class Client extends http.BaseClient {
   @protected

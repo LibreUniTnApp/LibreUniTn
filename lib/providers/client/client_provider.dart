@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter/widgets.dart'
     show InheritedWidget, StatefulWidget, State, Widget, BuildContext;
-import 'package:libreunitn/API/client.dart' show Client;
 import './client_manager.dart' show ClientManager;
 
 class ClientProvider extends StatefulWidget {
