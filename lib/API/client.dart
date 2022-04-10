@@ -34,28 +34,6 @@ class Client extends http.BaseClient {
 
   AuthorizedClient forceDowncast() => this as AuthorizedClient;
 
-  Future<AuthorizedClient> login() async {
-    final appAuth = FlutterAppAuth();
-    //TODO: Maybe wrap in try{} to handle exceptions?
-    final tokenResponse = await appAuth.authorizeAndExchangeCode(
-      AuthorizationTokenRequest(
-        constants.clientId,
-        constants.authorizationRedirectUri,
-        clientSecret: constants.clientSecret,
-        discoveryUrl: constants.discoveryUrl,
-        scopes: constants.scopes
-      )
-    );
-    if(tokenResponse != null){
-      logger.fine(()=>'Received $tokenResponse');
-      final credentials = Credentials.fromTokenResponse(tokenResponse);
-      return AuthorizedClient(this, credentials);
-    } else {
-      //TODO: Handle error
-      throw "No Response";
-    }
-  }
-
   final http.Client _inner;
 
   @override

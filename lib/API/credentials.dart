@@ -1,6 +1,6 @@
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:dart_json_mapper/dart_json_mapper.dart';
-import './constants.dart' as constants;
+import './constants.dart';
 
 //TODO: Maybe implement validation? Theoretically the server doesn't support it, so it would be useless
 @jsonSerializable
@@ -60,10 +60,10 @@ class Credentials {
     final appAuth = FlutterAppAuth();
     final tokenResponse = await appAuth.token(
       TokenRequest(
-        constants.clientId,
-        constants.authorizationRedirectUri,
-        clientSecret: constants.clientSecret,
-        discoveryUrl: constants.discoveryUrl,
+        OpenIDConstants.clientId,
+        OpenIDConstants.authorizationRedirectUri,
+        clientSecret: OpenIDConstants.clientSecret,
+        discoveryUrl: OpenIDConstants.discoveryUrl,
         refreshToken: refreshToken,
         //grantType: 'refresh_token'
       )

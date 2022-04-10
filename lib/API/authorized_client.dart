@@ -4,26 +4,13 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:logging/logging.dart';
 import './client.dart';
 import './credentials.dart';
-import './constants.dart' as constants;
+import './constants.dart';
 
 class AuthorizedClient extends Client {
   final Credentials credentials;
 
   AuthorizedClient(Client client, this.credentials):
         super.fromClient(client);
-
-  Future<Client> logout() async {
-    final appAuth = FlutterAppAuth();
-    //TODO: Maybe wrap in a try{}
-    await appAuth.endSession(
-      EndSessionRequest(
-        idTokenHint: credentials.idToken,
-        postLogoutRedirectUrl: constants.logoutRedirectUri,
-        discoveryUrl: constants.discoveryUrl
-      )
-    );
-    return Client.fromClient(this);
-  }
 
   @override
   Future<AuthorizedClient> login() {
