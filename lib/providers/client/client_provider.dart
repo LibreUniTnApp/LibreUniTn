@@ -74,7 +74,8 @@ class _ClientInherited extends InheritedWidget {
     if(!oldWasNull && !newIsNull) {
       /* If the new client is the same as the old one, then _weakClientRef will return true
        * Otherwise, we haven't registered it to the old Expando and it will return null */
-      return oldWidget._weakClientRef![_manager.client!] ?? false;
+      final isSameAsOldClient = oldWidget._weakClientRef![_manager.client!] ?? false;
+      return !isSameAsOldClient;
     } else {
       /* Theoretically, the only other case that might happen is that
        * the old is null and the new is not. In that case, the first clause
