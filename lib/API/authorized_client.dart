@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart' show protected;
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:logging/logging.dart';
@@ -6,9 +7,6 @@ import './credentials.dart';
 import './constants.dart' as constants;
 
 class AuthorizedClient extends Client {
-  @override
-  late final Logger _logger = Logger('AuthorizedClient');
-
   final Credentials credentials;
 
   AuthorizedClient(Client client, this.credentials):
@@ -39,4 +37,8 @@ class AuthorizedClient extends Client {
     //super.send adds generic headers and delegates to http.Client
     return super.send(request);
   }
+
+  @override
+  @protected
+  Logger createLogger() => Logger('AuthorizedClient');
 }

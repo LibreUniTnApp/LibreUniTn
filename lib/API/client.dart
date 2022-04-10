@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart' show protected;
 import 'package:http/http.dart' as http;
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:logging/logging.dart';
@@ -6,7 +7,8 @@ import './credentials.dart';
 import './constants.dart' as constants;
 
 class Client extends http.BaseClient {
-  late final Logger _logger = Logger('Client');
+  @protected
+  late final Logger logger = createLogger();
 
   final String language;
 
@@ -45,7 +47,7 @@ class Client extends http.BaseClient {
       )
     );
     if(tokenResponse != null){
-      _logger.fine(()=>'Received $tokenResponse');
+      logger.fine(()=>'Received $tokenResponse');
       final credentials = Credentials.fromTokenResponse(tokenResponse);
       return AuthorizedClient(this, credentials);
     } else {
@@ -64,4 +66,7 @@ class Client extends http.BaseClient {
     request.headers['unitn-culture'] = language;
     return _inner.send(request);
   }
+
+  @protected
+  Logger createLogger() => Logger('Client');
 }
