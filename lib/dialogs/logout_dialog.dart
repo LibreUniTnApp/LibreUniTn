@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:libreunitn/API/api.dart';
@@ -44,7 +45,7 @@ class _LogoutDialogState extends State<LogoutDialog> {
         final client = await _logout(clientManager.client!.forceDowncast());
         clientManager.logout(client);
       } catch (error) {
-        clientManager.logout(Client());
+        //clientManager.logout(Client());
         _logger.severe('Received error while logging out', error);
       } finally {
         Navigator.pop(context);
@@ -54,25 +55,33 @@ class _LogoutDialogState extends State<LogoutDialog> {
 
   Future<Client> _logout(AuthorizedClient client) async {
     final appAuth = FlutterAppAuth();
-    /* Fun fact: The application (clientId) registered to the Shibboleth identity server
-     * is set up not to support ending the session, but the official application
-     * still tries to do it. If you try to log out the application
-     * briefly shows a Custom Tab and then closes it. Disabling the connection
-     * while the page is loading will stop the application from automatically closing it
-     * and leave you the time to see that the request is Unsupported.
-     * The code is here because this might be needed in the future, but
-     * right now it's useless, even if the official app still does the same request*/
-    /*await appAuth.endSession(
-        EndSessionRequest(
-            idTokenHint: client.credentials.idToken,
-            postLogoutRedirectUrl: OpenIDConstants.logoutRedirectUri,
-            discoveryUrl: OpenIDConstants.discoveryUrl
-        )
-    );*/
-    //TODO: Maybe wrap in a try{}
-    await appAuth.endSession(
-        EndSessionRequest(discoveryUrl: OpenIDConstants.discoveryUrl)
-    );
+    try {
+      //TODO: add Securely Randomly generated state
+      await appAuth.endSession(
+          EndSessionRequest(
+              idTokenHint: client.credentials.idToken,
+              postLogoutRedirectUrl: OpenIDConstants.logoutRedirectUri,
+              discoveryUrl: OpenIDConstants.discoveryUrl
+          )
+      );
+    } on PlatformException catch (error) {
+      /* Apparently, the first request might fail even on the official application.
+       * If the user or something else quits the Custom Tab in a failed state,
+       * we try again, as the second request might (and probably will) succeed. */
+      //If error.message contains 'User cancelled flow', then it is the user who closed the Custom Tab
+      if(error.code == 'end_session_failed'){
+        await appAuth.endSession(
+            EndSessionRequest(
+                idTokenHint: client.credentials.idToken,
+                postLogoutRedirectUrl: OpenIDConstants.logoutRedirectUri,
+                discoveryUrl: OpenIDConstants.discoveryUrl
+            )
+        );
+      } else {
+        //Bubble up the error if it's not what we expected
+        rethrow;
+      }
+    }
     return Client.fromClient(client);
   }
 }
