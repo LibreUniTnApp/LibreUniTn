@@ -47,7 +47,8 @@ class ClientManager {
     const secureStorage = FlutterSecureStorage();
     await secureStorage.delete(
         key: secure_storage_constants.credentialKey,
-        iOptions: secure_storage_constants.iOSOptions
+        iOptions: secure_storage_constants.iOSOptions,
+        aOptions: secure_storage_constants.androidOptions
     ).catchError(_catchFlutterSecureStorageError);
     _setClient(client);
   }
@@ -83,7 +84,7 @@ class ClientManager {
       });
   
   String? _catchFlutterSecureStorageError(dynamic error){
-    _logger.severe('Error while reading secureStorage', error);
+    _logger.severe('Error while using secureStorage', error);
     return null;
     //TODO: the error should be shown to the user before continuing. Maybe add a Handler in ClientProvider?
   }
