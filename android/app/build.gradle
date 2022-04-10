@@ -47,6 +47,9 @@ android {
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders += [
+                'appAuthRedirectScheme': 'unitrentoapp'
+        ]
     }
 
     buildTypes {
