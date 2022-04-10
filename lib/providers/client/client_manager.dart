@@ -10,6 +10,8 @@ import 'package:libreunitn/API/authorized_client.dart';
 import 'package:libreunitn/secure_storage_constants.dart'
   as secure_storage_constants;
 
+typedef FallbackLanguageResolver = String Function();
+
 class ClientManager {
   late final _logger = Logger('App.ClientManager');
 
@@ -19,12 +21,6 @@ class ClientManager {
   final StateSetter _update;
 
   ClientManager._withClient(this._client, this._update);
-
-  factory ClientManager.fromSecureStorage(StateSetter updateFunction){
-    final manager = ClientManager._withClient(null, updateFunction);
-    manager._scheduleReadingClientFromStorage();
-    return manager;
-  }
 
   void _setClient(Client client) {
     _logger.info('setClient called with ${client.runtimeType}');
@@ -53,7 +49,15 @@ class ClientManager {
     _setClient(client);
   }
 
-  Future _scheduleReadingClientFromStorage() =>
+  factory ClientManager.fromSecureStorage(
+      StateSetter updateFunction,
+      FallbackLanguageResolver fallbackLanguageResolver){
+    final manager = ClientManager._withClient(null, updateFunction);
+    manager._scheduleReadingClientFromStorage(fallbackLanguageResolver);
+    return manager;
+  }
+
+  Future _scheduleReadingClientFromStorage(FallbackLanguageResolver fallbackLanguageResolver) =>
       Future(() async {
         //Reading from Secure Storage
         const secureStorage = FlutterSecureStorage();
@@ -63,13 +67,16 @@ class ClientManager {
             aOptions: secure_storage_constants.androidOptions
         ).catchError(_catchFlutterSecureStorageError);
 
+        //TODO: Read language from Configuration
+        final language = fallbackLanguageResolver();
+
         if (credentialJson != null) {
           _logger.finer('Found Credentials in SecureStorage');
           await jsonMapperInitialized;
           final credentials = JsonMapper.fromJson<Credentials>(credentialJson)!;
           try {
             final client = AuthorizedClient(
-                Client(),
+                Client(language),
                 credentials
             );
             //Skip saving Credentials
@@ -80,7 +87,7 @@ class ClientManager {
           }
         }
         //Create a normal Client as a fallback
-        _setClient(Client());
+        _setClient(Client(language));
       });
   
   String? _catchFlutterSecureStorageError(dynamic error){

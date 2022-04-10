@@ -55,6 +55,7 @@ class Application extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [
+            //According to the documentation, en is the default if the system language isn't "it_*"
             Locale('en', ''),
             Locale('it', '')
           ],
