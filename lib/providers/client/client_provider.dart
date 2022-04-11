@@ -1,6 +1,7 @@
+import 'dart:ui' show Locale;
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter/widgets.dart'
-    show InheritedWidget, StatefulWidget, State, Widget, BuildContext, Container;
+    show InheritedWidget, StatefulWidget, State, Widget, BuildContext, Container, Localizations;
 import './client_manager.dart' show ClientManager;
 
 class ClientProvider extends StatefulWidget {
@@ -20,21 +21,35 @@ class ClientProvider extends StatefulWidget {
 }
 
 class _ClientProviderState extends State<ClientProvider> {
-  late final ClientManager _manager;
+  ClientManager? _manager;
+  late Locale _currentLocale;
 
   _ClientProviderState(): super();
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    //Localizations should be in the tree, as we are above most Widgets but below WidgetsApp
+    _currentLocale = Localizations.localeOf(context);
     //This should set it before build is called/before anything accesses the object
-    _manager = ClientManager.fromSecureStorage(setState);
+    if(_manager == null) {
+      _manager = ClientManager.fromSecureStorage(
+        /* If the locale is changed in the meantime,
+         * this should hopefully refer to the new locale.
+         * The alternative is using a singleton to pass the value forth,
+         * but that sounds useless */
+        ()=>_currentLocale,
+        setState
+      );
+    } else {
+      _manager!.client?.language = _currentLocale.languageCode;
+    }
   }
 
   @override
   Widget build(BuildContext context) => _ClientInherited(
     child: widget.child ?? Container(),
-    manager: _manager,
+    manager: _manager!,
   );
 }
 

@@ -67,9 +67,7 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /* Hopefully, this call is not expensive. It shouldn't be, as
-     * the constructor caches objects by name,
-     * but I'm not sure whether the lookup is cheap enough */
+    // This call shouldn't be expensive
     final logger = Logger('App.MainScaffold');
     final clientManager = ClientProvider.of(context);
     logger.finest(
@@ -82,7 +80,7 @@ class Main extends StatelessWidget {
             ? Text(clientManager.client.runtimeType.toString())
             : const CircularProgressIndicator(),
       ),
-      drawer: const NavigationDrawer(),
+      drawer: clientManager.client != null ? const NavigationDrawer() : null,
     );
   }
 }

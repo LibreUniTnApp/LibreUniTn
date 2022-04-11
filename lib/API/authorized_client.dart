@@ -7,6 +7,7 @@ import './credentials.dart';
 class AuthorizedClient extends Client {
   final Credentials credentials;
 
+  //TODO: Validate credentials (introspection OpenID endpoint?)
   AuthorizedClient(Client client, this.credentials):
         super.fromClient(client);
 

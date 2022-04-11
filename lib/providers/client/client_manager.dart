@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show Locale;
 import 'package:flutter/widgets.dart' show StateSetter;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:libreunitn/API/credentials.dart';
@@ -10,6 +11,14 @@ import 'package:libreunitn/API/authorized_client.dart';
 import 'package:libreunitn/secure_storage_constants.dart'
   as secure_storage_constants;
 
+typedef LanguageResolver = Locale Function();
+
+/* Using json to serialize and deserialize credentials may look ugly, but
+ * it also turns the Secure Storage entry in a single source of truth,
+ * this way we don't have to worry about strange logical invariants like
+ * missing the idToken but not the others. This way, either everything is
+ * saved or nothing */
+//TODO: Use a better, binary-oriented and tightly packed serialization format (ex: msgpack, ProtocolBuffers, etc...)
 class ClientManager {
   late final _logger = Logger('App.ClientManager');
 
@@ -20,9 +29,9 @@ class ClientManager {
 
   ClientManager._withClient(this._client, this._update);
 
-  factory ClientManager.fromSecureStorage(StateSetter updateFunction){
+  factory ClientManager.fromSecureStorage(LanguageResolver langResolver, StateSetter updateFunction){
     final manager = ClientManager._withClient(null, updateFunction);
-    manager._scheduleReadingClientFromStorage();
+    manager._scheduleReadingClientFromStorage(langResolver);
     return manager;
   }
 
@@ -53,7 +62,7 @@ class ClientManager {
     _setClient(client);
   }
 
-  Future _scheduleReadingClientFromStorage() =>
+  Future _scheduleReadingClientFromStorage(LanguageResolver langResolver) =>
       Future(() async {
         //Reading from Secure Storage
         const secureStorage = FlutterSecureStorage();
@@ -64,23 +73,24 @@ class ClientManager {
         ).catchError(_catchFlutterSecureStorageError);
 
         if (credentialJson != null) {
-          _logger.finer('Found Credentials in SecureStorage');
+          _logger.fine('Found Credentials in SecureStorage');
           await jsonMapperInitialized;
           final credentials = JsonMapper.fromJson<Credentials>(credentialJson)!;
-          try {
-            final client = AuthorizedClient(
-                Client(),
-                credentials
-            );
-            //Skip saving Credentials
-            _setClient(client);
-            return;
-          } on List<Exception> catch (exceptions) {
-            _logger.severe('Couldn\'t validate Credentials', exceptions);
-          }
+
+          final language = langResolver().languageCode;
+          _logger.finer('Received language', language);
+          final client = AuthorizedClient(
+              Client(language),
+              credentials
+          );
+          //Skip saving Credentials by calling _setClient directly
+          _setClient(client);
+          return;
         }
         //Create a normal Client as a fallback
-        _setClient(Client());
+        final language = langResolver().languageCode;
+        _logger.finer('Received language', language);
+        _setClient(Client(language));
       });
   
   String? _catchFlutterSecureStorageError(dynamic error){
