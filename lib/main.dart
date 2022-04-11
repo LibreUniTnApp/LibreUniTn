@@ -21,9 +21,8 @@ void main() {
             (event) => debugPrint("${event.time} [${event.loggerName}] ${event.level}: ${event.message}")
     );
   } else {
-    //Logger.root.level = Level.INFO;
-    //Logger('App').level = Level.ALL;
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.INFO;
+    Logger('App').level = Level.ALL;
     Logger.root.onRecord.forEach(
             (event) {
           String message = "${event.time} [${event.loggerName}] ${event.level}: ${event.message}";
