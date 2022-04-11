@@ -83,7 +83,6 @@ class Main extends StatelessWidget {
             : const CircularProgressIndicator(),
       ),
       drawer: const NavigationDrawer(),
-      floatingActionButton: FloatingActionButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>const Main()))),
     );
   }
 }
