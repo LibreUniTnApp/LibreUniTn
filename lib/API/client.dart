@@ -7,13 +7,14 @@ class Client extends http.BaseClient {
   @protected
   late final Logger logger = createLogger();
 
-  String language;
+  final String language;
 
   /* WARNING: This is not ok, language should always be specified.
    * since there's no easy way in the application to set a language yet, this
    * will have to do for now. */
   //TODO: Make language a required positional parameter
-  Client(String language) : this._withHttpClient(http.Client(), language);
+  @Deprecated("Language should always be specified")
+  Client([String language = 'en']) : this._withHttpClient(http.Client(), language);
   Client.fromClient(Client source) : this._withHttpClient(source._inner, source.language);
 
   /* This can be called only from the other constructors, so _inner will either

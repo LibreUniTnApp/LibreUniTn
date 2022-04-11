@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter/widgets.dart'
-    show InheritedWidget, StatefulWidget, State, Widget, BuildContext, WidgetsBinding;
+    show InheritedWidget, StatefulWidget, State, Widget, BuildContext;
 import './client_manager.dart' show ClientManager;
 
 class ClientProvider extends StatefulWidget {
@@ -28,10 +28,7 @@ class _ClientProviderState extends State<ClientProvider> {
   void initState() {
     super.initState();
     //This should set it before build is called/before anything accesses the object
-    _manager = ClientManager.fromSecureStorage(
-        setState,
-        _ClientProviderState._getLanguageCodeOfCurrentLocale
-    );
+    _manager = ClientManager.fromSecureStorage(setState);
   }
 
   @override
@@ -39,19 +36,6 @@ class _ClientProviderState extends State<ClientProvider> {
     child: widget.child,
     manager: _manager,
   );
-
-  static String _getLanguageCodeOfCurrentLocale() {
-    /* The instance should have been built during runApp(),
-     * so it is to be considered non-null during most of the Application's lifetime,
-     * including here.
-     * We get the locale the same way WidgetsApp does, without listening for
-     * changes, as we do not care about them.
-     * This should be called only once, during the first launch, when
-     * there couldn't possibly be a language set in the Application's settings.
-     * We do it here and not in ClientManager as it follows the separation of concerns rule */
-    final locale = WidgetsBinding.instance!.window.locale;
-    return locale.languageCode;
-  }
 }
 
 class _ClientInherited extends InheritedWidget {
