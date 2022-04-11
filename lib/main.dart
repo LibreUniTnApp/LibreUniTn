@@ -44,21 +44,20 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     /* final logger = Logger('App');
      * logger.finest(() => 'Building with theme $theme'); */
-    return ClientProvider(
-      child: MaterialApp(
-          title: 'LibreUniTn',
-          theme: themes.lightTheme,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('it', '')
-          ],
-          home: const Main()
-      )
+    return MaterialApp(
+      title: 'LibreUniTn',
+      theme: themes.lightTheme,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('it', '')
+      ],
+      builder: (context, child) => ClientProvider(child: child),
+      home: const Main()
     );
   }
 }
@@ -77,12 +76,14 @@ class Main extends StatelessWidget {
         () => 'Rebuilding with client of type ${clientManager.client?.runtimeType.toString() ?? 'null'}'
     );
     return Scaffold(
-        appBar: AppBar(),
-        body: Center(
-          child: clientManager.client != null
-              ? Text(clientManager.client.runtimeType.toString())
-              : const CircularProgressIndicator(),
-        ),
-        drawer: const NavigationDrawer());
+      appBar: AppBar(),
+      body: Center(
+        child: clientManager.client != null
+            ? Text(clientManager.client.runtimeType.toString())
+            : const CircularProgressIndicator(),
+      ),
+      drawer: const NavigationDrawer(),
+      floatingActionButton: FloatingActionButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>const Main()))),
+    );
   }
 }

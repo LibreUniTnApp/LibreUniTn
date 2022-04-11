@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart' show Key;
 import 'package:flutter/widgets.dart'
-    show InheritedWidget, StatefulWidget, State, Widget, BuildContext;
+    show InheritedWidget, StatefulWidget, State, Widget, BuildContext, Container;
 import './client_manager.dart' show ClientManager;
 
 class ClientProvider extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
 
   const ClientProvider({Key? key, required this.child})
       : super(key: key);
@@ -33,7 +33,7 @@ class _ClientProviderState extends State<ClientProvider> {
 
   @override
   Widget build(BuildContext context) => _ClientInherited(
-    child: widget.child,
+    child: widget.child ?? Container(),
     manager: _manager,
   );
 }
@@ -84,4 +84,6 @@ class _ClientInherited extends InheritedWidget {
       return (oldWasNull && !newIsNull) || (!oldWasNull && newIsNull);
     }
   }
+
+  //TODO: Change toDiagnosticsNode to return something other than a DiagnosticableTreeNode
 }
